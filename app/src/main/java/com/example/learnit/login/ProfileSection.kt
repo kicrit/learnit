@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ProfileSection(
     onNavigateToRegister: () -> Unit,
-    onNavigateToProfile: () -> Unit) {
+    onNavigateToHomeScreen: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize() // ubah jadi fillMaxSize biar bisa ngatur jarak vertikal penuh
@@ -185,7 +185,7 @@ fun ProfileSection(
                 )
         ) {
             Button(
-                onClick = { onNavigateToProfile() },
+                onClick = { onNavigateToHomeScreen() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Color.White

@@ -47,7 +47,7 @@ fun SplashScreen(navController: NavController) {
         alpha.animateTo(1f, animationSpec = tween(1500))
         scale.animateTo(1f, animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy))
         delay(2500)
-        navController.navigate("home") {
+        navController.navigate("login") {
             popUpTo("splash") { inclusive = true }
         }
     }

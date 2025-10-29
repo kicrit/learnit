@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.learnit.component.BottomBar
 import com.example.learnit.home.component.HomeCategory
 import com.example.learnit.ui.theme.LearnitTheme
@@ -25,7 +26,8 @@ import com.example.learnit.course.mycourse.model.courseList
 import com.example.learnit.home.model.mentorList
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavController) {
     Scaffold(bottomBar = { BottomBar() }) { paddingValues ->
         Column(
             modifier = Modifier
@@ -67,10 +69,3 @@ fun HomeScreen() {
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomePagePreview() {
-    LearnitTheme {
-        HomeScreen()
-    }
-}

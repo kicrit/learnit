@@ -1,26 +1,35 @@
-package com.example.learnit.profile
+package com.example.learnit
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
+import com.example.learnit.profile.EditProfileScreen
+import com.example.learnit.profile.ProfileScreen
+import com.example.learnit.splash.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "login" // tampil pertama kali = ProfileSection
+        startDestination = "splash" // tampil pertama kali = ProfileSection
     ) {
+
+        composable("splash") {
+            SplashScreen(navController = navController)
+        }
+
         // 🔹 Halaman Login
         composable("login") {
             ProfileSection(
                 onNavigateToRegister = {
                     navController.navigate("register") // pindah ke register
                 },
-                onNavigateToProfile = {
-                    navController.navigate("profile")
+                onNavigateToHomeScreen = {
+                    navController.navigate("HomeScreen")
                 }
             )
         }
@@ -37,11 +46,16 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
+
+
         // 🔹 Halaman Profile (kalau nanti mau lanjut setelah login)
-        composable("profile") {
-            ProfileScreen(navController)
+        composable("HomeScreen") {
+            HomeScreen(navController)
         }
 
+        composable("Profile") {
+            ProfileScreen(navController)
+        }
         // 🔹 Halaman Edit Profile (opsional)
         composable("editProfile") {
             EditProfileScreen(navController)

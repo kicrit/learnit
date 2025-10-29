@@ -2,4 +2,4 @@ package com.example.learnit.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
-data class BottomBarItem(val title: String, val icon: ImageVector)
+data class BottomBarItem(val title: String, val icon: ImageVector, val route: String)
