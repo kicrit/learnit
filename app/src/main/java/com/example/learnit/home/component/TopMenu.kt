@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -26,6 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learnit.R
+import com.example.learnit.gambar.Kotak
+import com.example.learnit.gambar.OrangLagu
+import com.example.learnit.gambar.Pelukis
+import com.example.learnit.gambar.SearchHitam
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
@@ -65,9 +70,52 @@ fun TopMenu(modifier: Modifier = Modifier) {
                     )
                 }
             }
+            Row(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Kotak,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Text(
+                        text = "3D Design",
+                        modifier = Modifier.widthIn(max = 100.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = OrangLagu,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Text(
+                        text = "Art & Humanities",
+                        modifier = Modifier.widthIn(max = 100.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Pelukis,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                    )
+                    Text(
+                        text = "Graphic Design",
+                        modifier = Modifier.widthIn(max = 100.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
 
-            LazyRow(
+            /*LazyRow(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth(),
@@ -95,8 +143,8 @@ fun TopMenu(modifier: Modifier = Modifier) {
                             textAlign = TextAlign.Center
                         )
                     }
-                }
-            }
+                }*/
+
 
         }
     }

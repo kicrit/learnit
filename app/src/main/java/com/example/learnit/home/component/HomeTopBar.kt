@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learnit.R
+import com.example.learnit.gambar.NOTIFICATIONS
+import com.example.learnit.gambar.SearchHitam
 import com.example.learnit.ui.theme.LearnitTheme
 
 
@@ -33,15 +36,15 @@ fun HomeTopBar() {
         {
             Column {
                 Text(
-                    text = "Hi Lumbuy Lasuy", fontSize = 24.sp,
+                    text = "Hi, Pak Tua Jenkins", fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Mau ngoclas apa hari ini", fontSize = 13.sp,
+                    text = "Mau belajar apa hari ini?", fontSize = 13.sp,
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.search),
+            Icon(
+                imageVector = NOTIFICATIONS,
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
             )
@@ -52,10 +55,10 @@ fun HomeTopBar() {
             value = "",
             onValueChange = {},
             leadingIcon = {
-                Image(
-                    painter = painterResource(id = R.drawable.search),
+                Icon(
+                    imageVector = SearchHitam,
                     contentDescription = null,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(32.dp),
                 )
 
             },
