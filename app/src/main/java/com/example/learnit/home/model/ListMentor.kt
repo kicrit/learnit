@@ -5,9 +5,9 @@ data class ListMentor(
 )
 
 val mentorList = listOf(
-    ListMentor(descMentor = "Matematika"),
-    ListMentor(descMentor = "Matemasd"),
-    ListMentor(descMentor = "rameswe"),
-    ListMentor(descMentor = "ramsewe"),
-    ListMentor(descMentor = "rameses"),
+    ListMentor(descMentor = "Joni"),
+    ListMentor(descMentor = "Jenkins"),
+    ListMentor(descMentor = "Pak Tua"),
+    ListMentor(descMentor = "Antonio"),
+    ListMentor(descMentor = "Jesse Pinkman"),
 )

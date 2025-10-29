@@ -31,22 +31,3 @@ class MainActivity : ComponentActivity() {
 fun AppContent(navController: androidx.navigation.NavHostController) {
     NavGraph(navController = navController)
 }
-
-
-@Composable
-fun LearnItPreviewUI(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
-    ) {
-        HomeTopBar()
-        TopMenu()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LearnItPreview(){
-    LearnitTheme {
-        LearnItPreviewUI()
-    }
-}
