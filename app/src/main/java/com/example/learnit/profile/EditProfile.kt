@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.learnit.R // ✅ pastikan resource ini sesuai
+import com.example.learnit.R
 
 @Composable
 fun EditProfileScreen(navController: NavController) {
@@ -43,7 +43,7 @@ fun EditProfileScreen(navController: NavController) {
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 🔹 Header
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -71,7 +71,7 @@ fun EditProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 🔹 Foto profil
+
         Image(
             painter = painterResource(id = R.drawable.profile),
             contentDescription = "Profile Picture",
@@ -83,7 +83,7 @@ fun EditProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 🔹 Reusable form field
+
         @Composable
         fun FormField(
             value: String,
@@ -113,7 +113,7 @@ fun EditProfileScreen(navController: NavController) {
             )
         }
 
-        // 🔹 Semua field input
+
         FormField(fullName, { fullName = it }, "Full Name")
         FormField(nickName, { nickName = it }, "Nick Name")
         FormField(dateOfBirth, { dateOfBirth = it }, "Date of Birth")

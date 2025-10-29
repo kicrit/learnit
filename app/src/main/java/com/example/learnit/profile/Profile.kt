@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.learnit.R // ✅ pastikan sesuai dengan nama package app kamu
+import com.example.learnit.R
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -64,7 +64,7 @@ fun ProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // 🔹 Foto profil
+
         Image(
             painter = painterResource(id = R.drawable.profile),
             contentDescription = null,
@@ -80,7 +80,6 @@ fun ProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 🔹 Card
         Card(
             modifier = Modifier
                 .fillMaxWidth()
