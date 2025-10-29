@@ -20,28 +20,36 @@ import com.example.learnit.model.BottomBarItem
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
-fun BottomBar(modifier: Modifier = Modifier) {
+fun BottomBar(
+    modifier: Modifier = Modifier) {
     NavigationBar(modifier) {
         val bottomNavigation = listOf(
             BottomBarItem(
                 title = "HOME",
-                icon = HomeIcon
+                icon = HomeIcon,
+                route = "profile"
+
             ),
             BottomBarItem(
                 title = "MY COURSES",
-                icon = CourseIcon
+                icon = CourseIcon,
+                route = "profile"
             ),
             BottomBarItem(
                 title = "CHAT",
-                icon = ChatIcon
+                icon = ChatIcon,
+                route = "profile"
             ),
             BottomBarItem(
                 title = "TASKS",
-                icon = TaskIcon
+                icon = TaskIcon,
+                route = "profile"
+
             ),
             BottomBarItem(
                 title = "PROFILE",
-                icon = ProfileIcon
+                icon = ProfileIcon,
+                route = "Profile"
             )
         )
         bottomNavigation.map {

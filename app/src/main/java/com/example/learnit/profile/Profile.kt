@@ -29,7 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(
+    navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,11 +109,12 @@ fun ProfileScreen(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /* aksi logout */ }
+                        .clickable { navController.popBackStack() }
                         .padding(vertical = 12.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                         contentDescription = "Logout",
