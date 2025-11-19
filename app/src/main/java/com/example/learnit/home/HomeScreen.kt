@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.component.BottomBar
 import com.example.learnit.home.component.HomeCategory
 import com.example.learnit.ui.theme.LearnitTheme
@@ -69,3 +70,10 @@ fun HomeScreen(
 
 }
 
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview(){
+    LearnitTheme {
+        HomeScreen(rememberNavController())
+    }
+}
