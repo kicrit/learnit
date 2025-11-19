@@ -1,4 +1,4 @@
-/*package com.example.learnit.task.model
+package com.example.learnit.task.model
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -57,4 +57,3 @@ fun TaskPagePreview() {
         )
     }
 }
-*/

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,11 +36,12 @@ import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
 fun TopMenu(modifier: Modifier = Modifier) {
-    OutlinedCard(
+    Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        border = BorderStroke(1.dp, Color.Black),
+        elevation = CardDefaults.cardElevation( // ini nambah bayangan
+            defaultElevation = 10.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

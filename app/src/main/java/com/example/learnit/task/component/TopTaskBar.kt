@@ -1,4 +1,4 @@
-package com.example.learnit.task
+package com.example.learnit.task.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

@@ -99,7 +99,7 @@ fun TaskCard(
 
 @Preview(showBackground = true)
 @Composable
-fun TopTaskBarPreview() {
+fun TaskListPreview() {
     LearnitTheme {
         TaskList(
             tasks = listOf(
