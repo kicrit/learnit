@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.learnit.auth.AuthViewModel
+import com.example.learnit.auth.UserViewModel
+import com.example.learnit.task.TaskViewModel
 import com.example.learnit.ui.theme.LearnitTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,12 +21,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
+        val userViewModel: UserViewModel by viewModels ()
+        val taskViewModel: TaskViewModel by viewModels ()
         setContent {
             LearnitTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPaddding ->
                     NavGraph(
                         modifier = Modifier.padding(innerPaddding),
-                        authViewModel = authViewModel
+                        authViewModel = authViewModel,
+                        userViewModel = userViewModel,
+                        taskViewModel = taskViewModel
+
                     )
                 }
             }

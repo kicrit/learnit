@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.learnit.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.learnit.gambar.ChatIcon
 import com.example.learnit.gambar.CourseIcon
 import com.example.learnit.gambar.HomeIcon
@@ -21,19 +22,19 @@ import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
 fun BottomBar(
-    modifier: Modifier = Modifier) {
+    modifier: Modifier,navController: NavController) {
     NavigationBar(modifier) {
         val bottomNavigation = listOf(
             BottomBarItem(
                 title = "HOME",
                 icon = HomeIcon,
-                route = "profile"
+                route = "home"
 
             ),
             BottomBarItem(
                 title = "MY COURSES",
                 icon = CourseIcon,
-                route = "profile"
+                route = "mycourse"
             ),
             BottomBarItem(
                 title = "CHAT",
@@ -43,19 +44,19 @@ fun BottomBar(
             BottomBarItem(
                 title = "TASKS",
                 icon = TaskIcon,
-                route = "profile"
+                route = "task"
 
             ),
             BottomBarItem(
                 title = "PROFILE",
                 icon = ProfileIcon,
-                route = "Profile"
+                route = "profile"
             )
         )
         bottomNavigation.map {
             NavigationBarItem(
                 selected = it.title == bottomNavigation[0].title,
-                onClick = {},
+                onClick = {navController.navigate(it.route)},
                 icon = { Icon(imageVector = it.icon, contentDescription = it.title) }
             )
         }
@@ -64,10 +65,3 @@ fun BottomBar(
 
 }
 
-@Preview
-@Composable
-fun BottomBarPreview() {
-    LearnitTheme {
-        BottomBar()
-    }
-}

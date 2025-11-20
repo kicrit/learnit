@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.learnit.course.onlinecourse.component.BarCourses
 import com.example.learnit.component.BottomBar
 import com.example.learnit.course.mycourse.component.MyCourseCategory
@@ -21,8 +22,8 @@ import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
-fun MyCoursePage() {
-    Scaffold(bottomBar = { BottomBar() }) { paddingValues ->
+fun MyCoursePage(modifier: Modifier, navController: NavController) {
+    Scaffold(bottomBar = { BottomBar(modifier= Modifier, navController) }) { paddingValues ->
         LazyColumn (
             modifier = Modifier
                 .padding(paddingValues)
@@ -30,7 +31,7 @@ fun MyCoursePage() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                MyCourseTopBar()
+                MyCourseTopBar(modifier,navController)
             }
             items(courseList) { course ->
                 MyCourseCategory(listCourse = course)
@@ -42,10 +43,3 @@ fun MyCoursePage() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MyCoursePagePreview(){
-    LearnitTheme {
-        MyCoursePage()
-    }
-}

@@ -3,6 +3,7 @@ package com.example.learnit.course.mycourse.component
 import com.example.learnit.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,12 +28,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.learnit.gambar.SearchHitam
 import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
-fun MyCourseTopBar(modifier: Modifier = Modifier) {
+fun MyCourseTopBar(modifier: Modifier = Modifier, navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -43,7 +45,9 @@ fun MyCourseTopBar(modifier: Modifier = Modifier) {
             Image(
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = null,
-                modifier = Modifier.size(21.dp)
+                modifier = Modifier
+                    .size(21.dp)
+                    .clickable { navController.popBackStack() }
 
             )
             Text(
@@ -79,9 +83,12 @@ fun MyCourseTopBar(modifier: Modifier = Modifier) {
                         tint = Color(0xFF131BFF)
                     )
                 },
-                placeholder = { Text(
-                    "Search",
-                    color = Color(0xFFB4BDC4)) },
+                placeholder = {
+                    Text(
+                        "Search",
+                        color = Color(0xFFB4BDC4)
+                    )
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -100,10 +107,3 @@ fun MyCourseTopBar(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MyCourseTopBarPreview() {
-    LearnitTheme {
-        MyCourseTopBar()
-    }
-}

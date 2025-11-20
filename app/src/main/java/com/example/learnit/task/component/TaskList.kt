@@ -1,5 +1,6 @@
 package com.example.learnit.task.component
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.learnit.ui.theme.LearnitTheme
 
 data class TaskItem(
+    val id: String,
     val title: String,
     val notes: String,
     val deadline: String
@@ -97,16 +99,3 @@ fun TaskCard(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun TaskListPreview() {
-    LearnitTheme {
-        TaskList(
-            tasks = listOf(
-                TaskItem("Tugas Mobile", "Kerjain UI Compose", "30 Okt 2025"),
-                TaskItem("Belajar Keamanan", "Review materi RSA", "2 Nov 2025"),
-                TaskItem("Ngoding", "Selesaiin project IoT", "5 Nov 2025")
-            )
-        )
-    }
-}

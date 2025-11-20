@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -25,9 +27,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
-
 @Composable
-fun EditProfileScreen(navController: NavController) {
+fun EditProfileScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     var fullName by remember { mutableStateOf("") }
     var nickName by remember { mutableStateOf("") }
     var dateOfBirth by remember { mutableStateOf("") }
@@ -38,12 +42,14 @@ fun EditProfileScreen(navController: NavController) {
     val primaryColor = Color(0xFF2B1AFF)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState()),   // ⭐ SCROLL ENABLED
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        // Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -71,7 +77,7 @@ fun EditProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
+        // Profile picture
         Image(
             painter = painterResource(id = R.drawable.profile),
             contentDescription = "Profile Picture",
@@ -83,7 +89,7 @@ fun EditProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-
+        // Reusable Form Field
         @Composable
         fun FormField(
             value: String,
@@ -113,7 +119,7 @@ fun EditProfileScreen(navController: NavController) {
             )
         }
 
-
+        // Fields
         FormField(fullName, { fullName = it }, "Full Name")
         FormField(nickName, { nickName = it }, "Nick Name")
         FormField(dateOfBirth, { dateOfBirth = it }, "Date of Birth")
@@ -123,7 +129,7 @@ fun EditProfileScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 🔹 Tombol Update
+        // Update Button
         Button(
             onClick = { /* aksi update nanti */ },
             modifier = Modifier
@@ -152,12 +158,7 @@ fun EditProfileScreen(navController: NavController) {
                 )
             }
         }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun EditProfileScreenPreview() {
-    val navController = rememberNavController()
-    EditProfileScreen(navController = navController)
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 }

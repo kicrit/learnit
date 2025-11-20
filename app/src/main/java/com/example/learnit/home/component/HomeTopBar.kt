@@ -33,7 +33,10 @@ import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
-fun HomeTopBar() {
+fun HomeTopBar(username: String) {
+
+
+
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -43,7 +46,8 @@ fun HomeTopBar() {
         {
             Column {
                 Text(
-                    text = "Hi, Pak Tua Jenkins", fontSize = 24.sp,
+                    text = "Hi, $username",
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
@@ -104,10 +108,3 @@ fun HomeTopBar() {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeTopBarPreview() {
-    LearnitTheme {
-        HomeTopBar()
-    }
-}

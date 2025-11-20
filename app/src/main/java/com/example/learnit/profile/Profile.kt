@@ -14,6 +14,8 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,10 +29,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
+import com.example.learnit.auth.AuthState
+import com.example.learnit.auth.AuthViewModel
 
 @Composable
 fun ProfileScreen(
-    navController: NavController) {
+    modifier: Modifier,
+    navController: NavController, authViewModel: AuthViewModel
+) {
+
+    val authState = authViewModel.authState.observeAsState()
+    val userData = authViewModel.userData.observeAsState()
+
+    LaunchedEffect(true) {
+        authViewModel.loadUserData()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,8 +89,16 @@ fun ProfileScreen(
         )
 
         Spacer(modifier = Modifier.height(12.dp))
-        Text("Pak Tua Jenkins", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Text("tuatuakeladi@gmail.ac.in", color = Color.Gray, fontSize = 14.sp)
+        Text(
+            userData.value?.get("username") as? String ?: "Loading...",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            userData.value?.get("email") as? String ?: "",
+            color = Color.Gray,
+            fontSize = 14.sp
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -109,7 +130,12 @@ fun ProfileScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { navController.popBackStack() }
+                        .clickable {
+                            authViewModel.signout()           // SIGN OUT
+                            navController.navigate("login") { // Arahkan ke screen login
+                                popUpTo(0)                    // Hapus semua history
+                            }
+                        }
                         .padding(vertical = 12.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
@@ -161,9 +187,3 @@ fun ProfileOption(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    val navController = rememberNavController()
-    ProfileScreen(navController = navController)
-}

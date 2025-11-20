@@ -9,9 +9,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.learnit.auth.AuthState
+import com.example.learnit.auth.AuthViewModel
+import com.example.learnit.auth.UserViewModel
 import com.example.learnit.component.BottomBar
 import com.example.learnit.home.component.HomeCategory
 import com.example.learnit.ui.theme.LearnitTheme
@@ -30,14 +37,32 @@ import com.example.learnit.home.model.mentorList
 
 @Composable
 fun HomeScreen(
-    navController: NavController) {
-    Scaffold(bottomBar = { BottomBar() }) { paddingValues ->
+    modifier: Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    userViewModel : UserViewModel
+) {
+
+    val authState = authViewModel.authState.observeAsState()
+    val username = userViewModel.username.observeAsState("User")
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Unauthenticated -> navController.navigate("login")
+            else -> Unit
+        }
+    }
+
+    Scaffold(bottomBar = { BottomBar(modifier = Modifier, navController) }) { paddingValues ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {
-            HomeTopBar()
+            TextButton(onClick = { authViewModel.signout() }) {
+                Text("wenak signout")
+            }
+            HomeTopBar(username.value)
             TopMenu()
             Row(
                 modifier = Modifier
@@ -45,14 +70,18 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Ongoing Courses",
-                    fontWeight = FontWeight.SemiBold)
-                Text(text = "SEE ALL >",
+                Text(
+                    text = "Ongoing Courses",
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "SEE ALL >",
                     color = Color(0xFF131BFF),
-                    fontWeight = FontWeight.SemiBold)
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             LazyRow {
-                items(courseList){
+                items(courseList) {
                     HomeCategory(listCourse = it)
                 }
             }
@@ -62,14 +91,18 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Top Mentors",
-                    fontWeight = FontWeight.SemiBold)
-                Text(text = "SEE ALL >",
+                Text(
+                    text = "Top Mentors",
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "SEE ALL >",
                     color = Color(0xFF131BFF),
-                    fontWeight = FontWeight.SemiBold)
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             LazyRow {
-                items(mentorList){
+                items(mentorList) {
                     MentorCategory(listMentor = it)
                 }
             }
@@ -78,10 +111,3 @@ fun HomeScreen(
 
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview(){
-    LearnitTheme {
-        HomeScreen(rememberNavController())
-    }
-}
