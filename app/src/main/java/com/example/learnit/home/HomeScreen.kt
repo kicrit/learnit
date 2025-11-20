@@ -13,9 +13,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.component.BottomBar
 import com.example.learnit.home.component.HomeCategory
 import com.example.learnit.ui.theme.LearnitTheme
@@ -42,8 +45,11 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Ongoing Courses")
-                Text(text = "SEE ALL")
+                Text(text = "Ongoing Courses",
+                    fontWeight = FontWeight.SemiBold)
+                Text(text = "SEE ALL",
+                    color = Color(0xFF131BFF),
+                    fontWeight = FontWeight.SemiBold)
             }
             LazyRow {
                 items(courseList){
@@ -56,8 +62,11 @@ fun HomeScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Top Mentors")
-                Text(text = "SEE ALL")
+                Text(text = "Top Mentors",
+                    fontWeight = FontWeight.SemiBold)
+                Text(text = "SEE ALL",
+                    color = Color(0xFF131BFF),
+                    fontWeight = FontWeight.SemiBold)
             }
             LazyRow {
                 items(mentorList){
@@ -69,3 +78,10 @@ fun HomeScreen(
 
 }
 
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview(){
+    LearnitTheme {
+        HomeScreen(rememberNavController())
+    }
+}
