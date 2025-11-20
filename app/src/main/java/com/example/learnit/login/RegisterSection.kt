@@ -14,11 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.learnit.auth.AuthViewModel
 
 @Composable
 fun RegisterSection(
-    onNavigateToLogin: () -> Unit,
-    onNavigateToProfile: () -> Unit) {
+    modifier: Modifier, navController: NavController, authViewModel: AuthViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +66,7 @@ fun RegisterSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = { onNavigateToLogin() },
+                        onClick = { navController.navigate("login") },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
                             contentColor = Color.White
@@ -217,7 +219,7 @@ fun RegisterSection(
                 )
         ) {
             Button(
-                onClick = { onNavigateToProfile() },
+                onClick = { navController.navigate("register") },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Color.White

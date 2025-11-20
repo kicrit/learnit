@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "804541295812",
+    "project_id": "learnitapp-4cf27",
+    "storage_bucket": "learnitapp-4cf27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804541295812:android:c43488267d1be7fe472d91",
+        "android_client_info": {
+          "package_name": "com.example.learnit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMiHrklTFi2m6bS8SWbW_d6yr4FBA2KU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

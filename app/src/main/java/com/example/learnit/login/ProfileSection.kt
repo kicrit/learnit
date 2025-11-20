@@ -14,11 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.learnit.auth.AuthViewModel
 
 @Composable
 fun ProfileSection(
-    onNavigateToRegister: () -> Unit,
-    onNavigateToHomeScreen: () -> Unit) {
+    modifier: Modifier, navController: NavController, authViewModel: AuthViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize() // ubah jadi fillMaxSize biar bisa ngatur jarak vertikal penuh
@@ -78,7 +80,7 @@ fun ProfileSection(
                     }
 
                     Button(
-                        onClick = { onNavigateToRegister() },
+                        onClick = { navController.navigate("register") },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
                             contentColor = Color.White
@@ -103,9 +105,9 @@ fun ProfileSection(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Username
+            // email
             Text(
-                text = "Username",
+                text = "Email",
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
@@ -114,12 +116,12 @@ fun ProfileSection(
                 textAlign = TextAlign.Left
             )
 
-            var username by remember { mutableStateOf("") }
+            var email by remember { mutableStateOf("") }
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                placeholder = { Text("Enter your username") },
+                value = email,
+                onValueChange = { email = it },
+                placeholder = { Text("Enter your email") },
                 singleLine = true,
                 shape = RoundedCornerShape(40.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -185,7 +187,7 @@ fun ProfileSection(
                 )
         ) {
             Button(
-                onClick = { onNavigateToHomeScreen() },
+                onClick = { navController.navigate("login") },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Color.White
