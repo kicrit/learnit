@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.learnit.course.mycourse.model.ListCourse
@@ -27,11 +28,14 @@ import com.example.learnit.ui.theme.LearnitTheme
 fun MyCourseCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(24.dp)
             .fillMaxWidth()
             .height(200.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(Color.Transparent)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation( // ini nambah bayangan
+            defaultElevation = 10.dp),
+        colors = CardDefaults.cardColors(Color.White)
+
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -39,11 +43,23 @@ fun MyCourseCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
                     .fillMaxWidth()
                     .fillMaxHeight(0.5f)
                     .background(Color.Black),
+
             )
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)) {
-                Text(listCourse.descCourse)
-                Text(listCourse.descCourse2)
-                Text(listCourse.progressCourse)
+                Text(
+                    listCourse.descCourse,
+                    color = Color(0xFFFF6B00),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    listCourse.descCourse2,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    listCourse.progressCourse,
+                    color = Color(0xFF131BFF),
+                    fontWeight = FontWeight.ExtraBold
+                )
             }
         }
 

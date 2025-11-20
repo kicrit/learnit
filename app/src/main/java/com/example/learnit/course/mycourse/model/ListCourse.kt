@@ -9,9 +9,9 @@ data class ListCourse(
 
 val courseList = listOf(
     ListCourse(
-        descCourse = "Preapur",
-        descCourse2 = "prepss lawsk",
-        progressCourse = "progres 90%"
+        descCourse = "Graphic Design",
+        descCourse2 = "Graphic Design Advanced",
+        progressCourse = "Progress 90% >"
     ),
     ListCourse(
         descCourse = "sd",

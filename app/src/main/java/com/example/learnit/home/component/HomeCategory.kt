@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.learnit.course.mycourse.model.ListCourse
@@ -41,9 +42,20 @@ fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
                     .background(Color.Black),
             )
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)) {
-                Text(listCourse.descCourse)
-                Text(listCourse.descCourse2)
-                Text(listCourse.progressCourse)
+                Text(
+                    listCourse.descCourse,
+                    color = Color(0xFFFF6B00),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    listCourse.descCourse2,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    listCourse.progressCourse,
+                    color = Color(0xFF131BFF),
+                    fontWeight = FontWeight.ExtraBold
+                )
             }
         }
 

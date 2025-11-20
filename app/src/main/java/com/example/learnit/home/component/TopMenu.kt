@@ -61,15 +61,11 @@ fun TopMenu(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "SEE ALL",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        text = "SEE ALL >",
+                        color = Color(0xFF131BFF),
+                        fontWeight = FontWeight.SemiBold
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.back),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp)
-                    )
+
                 }
             }
             Row(

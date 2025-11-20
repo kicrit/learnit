@@ -47,7 +47,7 @@ fun HomeScreen(
             ) {
                 Text(text = "Ongoing Courses",
                     fontWeight = FontWeight.SemiBold)
-                Text(text = "SEE ALL",
+                Text(text = "SEE ALL >",
                     color = Color(0xFF131BFF),
                     fontWeight = FontWeight.SemiBold)
             }
@@ -64,7 +64,7 @@ fun HomeScreen(
             ) {
                 Text(text = "Top Mentors",
                     fontWeight = FontWeight.SemiBold)
-                Text(text = "SEE ALL",
+                Text(text = "SEE ALL >",
                     color = Color(0xFF131BFF),
                     fontWeight = FontWeight.SemiBold)
             }
