@@ -1,4 +1,4 @@
-package com.example.learnit.course.mycourse.component
+package com.example.learnit.course.course.component
 
 import com.example.learnit.R
 import androidx.compose.foundation.Image
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,16 +24,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.learnit.gambar.SearchHitam
-import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
-fun MyCourseTopBar(modifier: Modifier = Modifier, navController: NavController) {
+fun CourseTopBar(modifier: Modifier = Modifier, navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -51,7 +48,7 @@ fun MyCourseTopBar(modifier: Modifier = Modifier, navController: NavController) 
 
             )
             Text(
-                text = "My Course", fontSize = 21.sp,
+                text = "Courses", fontSize = 21.sp,
                 fontWeight = FontWeight.Bold
             )
         }

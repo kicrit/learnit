@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.learnit.course.mycourse.model.ListCourse
+import com.example.learnit.course.course.model.ListCourse
 import com.example.learnit.ui.theme.LearnitTheme
 
 
@@ -66,6 +66,6 @@ fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
 @Composable
 fun HomeCategoryPreview() {
     LearnitTheme {
-        HomeCategory(listCourse = ListCourse("s","s","s"))
+        HomeCategory(listCourse = ListCourse(id=1,"s","s","s"))
     }
 }

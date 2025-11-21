@@ -7,16 +7,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import com.example.learnit.course.onlinecourse.component.BarCourses
 import com.example.learnit.component.BottomBar
-import com.example.learnit.course.mycourse.component.MyCourseCategory
-import com.example.learnit.course.mycourse.component.MyCourseTopBar
-import com.example.learnit.course.mycourse.model.courseList
+import com.example.learnit.course.course.component.CourseCategory
+import com.example.learnit.course.course.model.courseList
 import com.example.learnit.mentor.component.BarMentor
 import com.example.learnit.mentor.component.MentorTopBar
-import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
@@ -33,8 +29,8 @@ fun MentorPage(modifier: Modifier, navController: NavController) {
             item {
                 BarMentor()
             }
-            items(courseList){
-                MyCourseCategory(listCourse = it)
+            items(courseList){course ->
+                CourseCategory(listCourse = course,onClick ={})
             }
         }
     }

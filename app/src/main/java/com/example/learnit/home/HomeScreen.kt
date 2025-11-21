@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,20 +18,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.learnit.auth.AuthState
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.component.BottomBar
 import com.example.learnit.home.component.HomeCategory
-import com.example.learnit.ui.theme.LearnitTheme
 import com.example.learnit.home.component.HomeTopBar
 import com.example.learnit.home.component.MentorCategory
 import com.example.learnit.home.component.TopMenu
-import com.example.learnit.course.mycourse.model.courseList
+import com.example.learnit.course.course.model.courseList
 import com.example.learnit.home.model.mentorList
 
 @Composable

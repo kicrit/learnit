@@ -1,7 +1,8 @@
-package com.example.learnit.course.mycourse.component
+package com.example.learnit.course.course.component
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,22 +19,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.learnit.course.mycourse.model.ListCourse
-import com.example.learnit.ui.theme.LearnitTheme
+import com.example.learnit.course.course.model.ListCourse
 
 
 @Composable
-fun MyCourseCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
+fun CourseCategory(
+    modifier: Modifier = Modifier,
+    listCourse: ListCourse,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .padding(24.dp)
             .fillMaxWidth()
-            .height(200.dp),
+            .height(200.dp)
+            .clickable{onClick()},
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation( // ini nambah bayangan
-            defaultElevation = 10.dp),
+            defaultElevation = 10.dp
+        ),
         colors = CardDefaults.cardColors(Color.White)
 
     ) {
@@ -44,8 +49,10 @@ fun MyCourseCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
                     .fillMaxHeight(0.5f)
                     .background(Color.Black),
 
-            )
-            Column(modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)) {
+                )
+            Column(modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)) {
                 Text(
                     listCourse.descCourse,
                     color = Color(0xFFFF6B00),
@@ -66,10 +73,3 @@ fun MyCourseCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MyCourseCategoryPreview() {
-    LearnitTheme {
-        MyCourseCategory(listCourse = ListCourse("s","s","s"))
-    }
-}

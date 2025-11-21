@@ -23,13 +23,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 data class CourseVideo(
     val id: Int,
@@ -41,7 +42,7 @@ data class CourseVideo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CourseDetailScreen() {
+fun WebProgramming(modifier: Modifier,navController: NavController) {
     val listState = rememberLazyListState()
     val scrollOffset = remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }
     val firstVisibleItemIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
@@ -205,6 +206,34 @@ fun CourseDetailScreen() {
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }
+        // Enroll Button (fixed at bottom)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(Color.White)
+                .padding(20.dp)
+        ) {
+            Button(
+                onClick = {
+                    // Aksi enroll di sini
+                    // Misalnya: navController.navigate("payment_page")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1a73e8))
+            ) {
+                Text(
+                    text = "Enroll Now",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+
     }
 }
 
@@ -424,8 +453,16 @@ fun VideoCard(video: CourseVideo) {
     }
 }
 
+
+@Composable
+fun WebProgrammingPreviewOnly() {
+    WebProgramming(
+        modifier = Modifier,
+        navController = rememberNavController() // NAV CONTROLLER PALSU, cocok untuk Preview
+    )
+}
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailPreview() {
-    CourseDetailScreen()
+    WebProgrammingPreviewOnly()
 }

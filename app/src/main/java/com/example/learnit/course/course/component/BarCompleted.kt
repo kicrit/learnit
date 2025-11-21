@@ -1,4 +1,4 @@
-package com.example.learnit.course.mycourse.component
+package com.example.learnit.course.course.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
