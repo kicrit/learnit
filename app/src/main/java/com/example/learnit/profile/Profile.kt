@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,15 +27,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
 import com.example.learnit.auth.AuthState
 import com.example.learnit.auth.AuthViewModel
 
+// Mock AuthViewModel for Preview purposes
+class MockAuthViewModel : ViewModel() {
+    val authState = MutableLiveData<AuthState>(AuthState.Authenticated)
+    val userData = MutableLiveData<Map<String, Any?>>(
+        mapOf(
+            "username" to "John Doe",
+            "email" to "john.doe@example.com"
+        )
+    )
+
+    fun loadUserData() {
+        // Mock implementation for preview
+    }
+
+    fun signout() {
+        // Mock implementation for preview
+    }
+}
+
+
 @Composable
 fun ProfileScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier, // Added default value for modifier for better reusability
     navController: NavController, authViewModel: AuthViewModel
 ) {
 
@@ -45,7 +68,7 @@ fun ProfileScreen(
         authViewModel.loadUserData()
     }
     Column(
-        modifier = Modifier
+        modifier = modifier // Use the passed modifier
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -120,12 +143,9 @@ fun ProfileScreen(
                     text = "Edit Profile",
                     onClick = { navController.navigate("editProfile") }
                 )
-                ProfileOption(
-                    icon = Icons.Default.Notifications,
-                    text = "Notifications"
-                )
 
-                Spacer(modifier = Modifier.weight(1f))
+                // Spacer moved outside the main options to be above the Logout button
+                Spacer(modifier = Modifier.height(48.dp)) // Added space
 
                 Row(
                     modifier = Modifier
@@ -187,3 +207,19 @@ fun ProfileOption(
     }
 }
 
+// Tambahkan fungsi Preview di sini
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+
+    val navController = rememberNavController()
+
+    val mockAuthViewModel = remember { MockAuthViewModel() }
+
+    // Memanggil composable yang ingin dipreview
+    ProfileScreen(
+        modifier = Modifier,
+        navController = navController,
+        authViewModel = mockAuthViewModel as AuthViewModel
+    )
+}

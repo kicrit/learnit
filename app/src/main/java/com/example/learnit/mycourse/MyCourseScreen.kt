@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,20 +60,24 @@ fun MyCourseScreen(
         if (myCourses.isEmpty()) {
             EmptyMyCourse()
         } else {
-            CourseList(myCourses)
+            CourseList(navController = navController, list = myCourses)
         }
     }
 }
 
 
 @Composable
-fun CourseList(list: List<ListCourse>) {
+fun CourseList(navController: NavController, list: List<ListCourse>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(list) { course ->
             CourseCategory(
                 listCourse = course,
                 onClick = {
-                    // TODO → masuk ke CourseDetail
+                    // Navigate to the correct course detail screen
+                    when (course.id) {
+                        1 -> navController.navigate("webprogramming")
+                        // Add other cases for other courses here
+                    }
                 }
             )
         }
@@ -102,7 +104,7 @@ fun EmptyMyCourse() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "You haven't enrolled any courses yet",
+            text = "You haven\'t enrolled any courses yet",
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(8.dp))

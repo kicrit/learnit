@@ -10,15 +10,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,17 +26,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
+import com.example.learnit.auth.AuthViewModel
+import com.example.learnit.auth.UpdateState
+
 @Composable
 fun EditProfileScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
-    var fullName by remember { mutableStateOf("") }
-    var nickName by remember { mutableStateOf("") }
-    var dateOfBirth by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
-    var student by remember { mutableStateOf("") }
+    val userData = authViewModel.userData.observeAsState()
+    val updateState = authViewModel.updateState.observeAsState()
+
+    var username by remember { mutableStateOf("") }
+
+    LaunchedEffect(userData.value) {
+        userData.value?.let {
+            username = it["username"] as? String ?: ""
+        }
+    }
+
+    LaunchedEffect(updateState.value) {
+        when (updateState.value) {
+            is UpdateState.Success -> {
+                navController.popBackStack()
+                authViewModel.resetUpdateState()
+            }
+            is UpdateState.Error -> {
+                // Optionally, show an error message to the user
+            }
+            else -> Unit
+        }
+    }
 
     val primaryColor = Color(0xFF2B1AFF)
 
@@ -45,7 +65,7 @@ fun EditProfileScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(20.dp)
-            .verticalScroll(rememberScrollState()),   // ⭐ SCROLL ENABLED
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -89,49 +109,26 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Reusable Form Field
-        @Composable
-        fun FormField(
-            value: String,
-            onValueChange: (String) -> Unit,
-            label: String,
-            trailingIcon: ImageVector? = null
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                label = { Text(label) },
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = primaryColor,
-                    unfocusedBorderColor = Color.LightGray,
-                    cursorColor = primaryColor
-                ),
-                trailingIcon = {
-                    if (trailingIcon != null) {
-                        Icon(trailingIcon, contentDescription = null, tint = Color.Gray)
-                    }
-                },
-                readOnly = trailingIcon != null
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = primaryColor,
+                unfocusedBorderColor = Color.LightGray,
+                cursorColor = primaryColor
             )
-        }
-
-        // Fields
-        FormField(fullName, { fullName = it }, "Full Name")
-        FormField(nickName, { nickName = it }, "Nick Name")
-        FormField(dateOfBirth, { dateOfBirth = it }, "Date of Birth")
-        FormField(email, { email = it }, "Email")
-        FormField(gender, { gender = it }, "Gender", Icons.Default.ArrowDropDown)
-        FormField(student, { student = it }, "Student")
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Update Button
         Button(
-            onClick = { /* aksi update nanti */ },
+            onClick = { authViewModel.updateUsername(username) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -150,15 +147,32 @@ fun EditProfileScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Update",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                if (updateState.value == UpdateState.Loading) {
+                    CircularProgressIndicator(color = Color.White)
+                } else {
+                    Text(
+                        text = "Update",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+// Fungsi Preview
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun EditProfileScreenPreview() {
+    val navController = rememberNavController()
+    // Mock AuthViewModel for preview
+    val authViewModel = AuthViewModel()
+    EditProfileScreen(
+        navController = navController,
+        authViewModel = authViewModel
+    )
 }

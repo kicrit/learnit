@@ -2,15 +2,17 @@ package com.example.learnit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.course.coursedetail.WebProgramming
 import com.example.learnit.course.course.CoursePage
 import com.example.learnit.course.mycourse.MyCourseScreen
-import com.example.learnit.course.mycourse.MyCourseViewModel
+import com.example.learnit.course.videoplayer.VideoPlayerScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
@@ -44,7 +46,7 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
             TaskPage(modifier,navController, taskViewModel)
         }
         composable("editprofile") {
-            EditProfileScreen(modifier,navController)
+            EditProfileScreen(modifier,navController, authViewModel)
         }
         composable("webprogramming") {
             WebProgramming(modifier,navController)
@@ -52,9 +54,13 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
         composable("mycourse") {
             MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })
         }
-
-
-
+        composable(
+            route = "videoplayer/{videoId}",
+            arguments = listOf(navArgument("videoId") { type = NavType.StringType })
+        ) {
+            val videoId = it.arguments?.getString("videoId") ?: ""
+            VideoPlayerScreen(navController = navController, videoId = videoId)
+        }
 
     })
 }

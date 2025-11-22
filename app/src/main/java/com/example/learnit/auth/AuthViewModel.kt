@@ -14,9 +14,11 @@ class AuthViewModel : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>()
     private val _userData = MutableLiveData<Map<String, Any>?>()
+    private val _updateState = MutableLiveData<UpdateState>()
 
     val userData: LiveData<Map<String, Any>?> = _userData
     val authState: LiveData<AuthState> = _authState
+    val updateState: LiveData<UpdateState> = _updateState
 
 
     init {
@@ -32,6 +34,36 @@ class AuthViewModel : ViewModel() {
             .addOnSuccessListener { doc ->
                 _userData.value = doc.data
             }
+    }
+
+    fun updateUsername(newUsername: String) {
+        val uid = auth.currentUser?.uid ?: run {
+            _updateState.value = UpdateState.Error("User not logged in")
+            return
+        }
+
+        if (newUsername.isBlank()) {
+            _updateState.value = UpdateState.Error("Username cannot be empty")
+            return
+        }
+
+        _updateState.value = UpdateState.Loading
+
+        db.collection("users")
+            .document(uid)
+            .update("username", newUsername)
+            .addOnSuccessListener {
+                _updateState.value = UpdateState.Success
+                // also refresh user data
+                loadUserData()
+            }
+            .addOnFailureListener { e ->
+                _updateState.value = UpdateState.Error(e.message ?: "Failed to update username")
+            }
+    }
+
+    fun resetUpdateState() {
+        _updateState.value = UpdateState.Idle
     }
 
     fun checkAuthStatus() {
@@ -124,4 +156,11 @@ sealed class AuthState {
     object Unauthenticated : AuthState()
     object Loading : AuthState()
     data class Error(val message: String) : AuthState()
+}
+
+sealed class UpdateState {
+    object Idle : UpdateState()
+    object Loading : UpdateState()
+    object Success : UpdateState()
+    data class Error(val message: String) : UpdateState()
 }
