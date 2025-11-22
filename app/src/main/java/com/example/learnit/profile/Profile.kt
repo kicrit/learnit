@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
 import com.example.learnit.auth.AuthState
 import com.example.learnit.auth.AuthViewModel
+import com.example.learnit.component.BottomBar
 
 // Mock AuthViewModel for Preview purposes
 class MockAuthViewModel : ViewModel() {
@@ -67,112 +68,117 @@ fun ProfileScreen(
     LaunchedEffect(true) {
         authViewModel.loadUserData()
     }
-    Column(
-        modifier = modifier // Use the passed modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // 🔹 Header
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
+    Scaffold(
+        bottomBar = { BottomBar(modifier = Modifier, navController = navController) }
+    ) { paddingValues ->
+        Column(
+            modifier = modifier // Use the passed modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.align(Alignment.CenterStart)
+            // 🔹 Header
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.Black
+                IconButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black
+                    )
+                }
+
+                Text(
+                    text = "Profile",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
 
-            Text(
-                text = "Profile",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.Center)
+            Spacer(modifier = Modifier.height(40.dp))
+
+
+            Image(
+                painter = painterResource(id = R.drawable.profile),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Color.Blue, CircleShape)
             )
-        }
 
-        Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                userData.value?.get("username") as? String ?: "Loading...",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                userData.value?.get("email") as? String ?: "",
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
 
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Image(
-            painter = painterResource(id = R.drawable.profile),
-            contentDescription = null,
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .border(2.dp, Color.Blue, CircleShape)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            userData.value?.get("username") as? String ?: "Loading...",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            userData.value?.get("email") as? String ?: "",
-            color = Color.Gray,
-            fontSize = 14.sp
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Column(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                ProfileOption(
-                    icon = Icons.Default.Person,
-                    text = "Edit Profile",
-                    onClick = { navController.navigate("editProfile") }
-                )
-
-                // Spacer moved outside the main options to be above the Logout button
-                Spacer(modifier = Modifier.height(48.dp)) // Added space
-
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            authViewModel.signout()           // SIGN OUT
-                            navController.navigate("login") { // Arahkan ke screen login
-                                popUpTo(0)                    // Hapus semua history
-                            }
-                        }
-                        .padding(vertical = 12.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(16.dp)
                 ) {
+                    ProfileOption(
+                        icon = Icons.Default.Person,
+                        text = "Edit Profile",
+                        onClick = { navController.navigate("editProfile") }
+                    )
 
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = Color.Black
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Logout",
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    // Spacer moved outside the main options to be above the Logout button
+                    Spacer(modifier = Modifier.height(48.dp)) // Added space
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                authViewModel.signout()           // SIGN OUT
+                                navController.navigate("login") { // Arahkan ke screen login
+                                    popUpTo(0)                    // Hapus semua history
+                                }
+                            }
+                            .padding(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Logout",
+                            tint = Color.Black
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Logout",
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }

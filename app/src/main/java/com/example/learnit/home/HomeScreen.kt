@@ -40,7 +40,7 @@ fun HomeScreen(
 ) {
 
     val authState = authViewModel.authState.observeAsState()
-    val username = userViewModel.username.observeAsState("User")
+    val username = userViewModel.username.observeAsState("username")
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
