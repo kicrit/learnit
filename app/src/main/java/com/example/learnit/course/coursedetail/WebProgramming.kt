@@ -214,7 +214,8 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                 ) {
                     VideoCard(video = video, onVideoClick = {
                         if (isEnrolled) {
-                            navController.navigate("videoplayer/${video.videoId}")
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=${video.videoId}"))
+                            context.startActivity(intent)
                         } else {
                             Toast.makeText(context, "Please enroll to watch the videos", Toast.LENGTH_SHORT).show()
                         }
