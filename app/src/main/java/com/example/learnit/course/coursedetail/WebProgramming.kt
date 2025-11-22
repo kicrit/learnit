@@ -29,8 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.learnit.course.course.model.ListCourse
+import com.example.learnit.course.mycourse.MyCourseViewModel
 
 data class CourseVideo(
     val id: Int,
@@ -46,7 +49,7 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
     val listState = rememberLazyListState()
     val scrollOffset = remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }
     val firstVisibleItemIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
-
+    val myCourseVM: MyCourseViewModel = viewModel()
     // Calculate fade based on scroll position
     val descriptionAlpha by animateFloatAsState(
         targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 0f else 1f,
@@ -216,8 +219,22 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
         ) {
             Button(
                 onClick = {
-                    // Aksi enroll di sini
-                    // Misalnya: navController.navigate("payment_page")
+                    val course = ListCourse(
+                        id = 1, // <-- UBAH sesuai data course ini
+                        descCourse = "Web Programming",
+                        descCourse2 = "Complete Web Programming",
+                        progressCourse = "0%"
+                    )
+                    myCourseVM.enrollCourse(
+                        course = course,
+                        onSuccess = {
+                            navController.navigate("mycourse")
+                        },
+                        onFail = { msg ->
+                            println("ENROLL ERROR: $msg")
+                        }
+                    )
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()

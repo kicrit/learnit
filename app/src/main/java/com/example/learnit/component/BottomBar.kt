@@ -34,12 +34,12 @@ fun BottomBar(
             BottomBarItem(
                 title = "MY COURSES",
                 icon = CourseIcon,
-                route = "mycourse"
+                route = "course"
             ),
             BottomBarItem(
                 title = "CHAT",
                 icon = ChatIcon,
-                route = "profile"
+                route = "mycourse"
             ),
             BottomBarItem(
                 title = "TASKS",

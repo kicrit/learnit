@@ -18,6 +18,7 @@ class AuthViewModel : ViewModel() {
     val userData: LiveData<Map<String, Any>?> = _userData
     val authState: LiveData<AuthState> = _authState
 
+
     init {
         checkAuthStatus()
     }
@@ -76,8 +77,10 @@ class AuthViewModel : ViewModel() {
                     val userData = hashMapOf(
                         "username" to username,
                         "email" to email,
-                        "createdAt" to System.currentTimeMillis()
+                        "createdAt" to System.currentTimeMillis(),
+                        "enrolledCourses" to emptyList<Int>()
                     )
+
 
                     db.collection("users")
                         .document(userId)

@@ -9,6 +9,8 @@ import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.course.coursedetail.WebProgramming
 import com.example.learnit.course.course.CoursePage
+import com.example.learnit.course.mycourse.MyCourseScreen
+import com.example.learnit.course.mycourse.MyCourseViewModel
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
@@ -35,7 +37,7 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
         composable("profile") {
             ProfileScreen(modifier, navController,authViewModel)
         }
-        composable("mycourse") {
+        composable("course") {
             CoursePage(modifier,navController)
         }
         composable("task") {
@@ -46,6 +48,9 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
         }
         composable("webprogramming") {
             WebProgramming(modifier,navController)
+        }
+        composable("mycourse") {
+            MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })
         }
 
 
