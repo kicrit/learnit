@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.learnit.R
 import com.example.learnit.gambar.Kotak
 import com.example.learnit.gambar.OrangLagu
@@ -35,13 +37,14 @@ import com.example.learnit.gambar.SearchHitam
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
-fun TopMenu(modifier: Modifier = Modifier) {
+fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
         elevation = CardDefaults.cardElevation( // ini nambah bayangan
-            defaultElevation = 10.dp),
+            defaultElevation = 10.dp
+        ),
         modifier = Modifier.padding(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -56,10 +59,7 @@ fun TopMenu(modifier: Modifier = Modifier) {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                TextButton(onClick = { navController.navigate("categories") }) {
                     Text(
                         text = "SEE ALL >",
                         color = Color(0xFF131BFF),
@@ -68,52 +68,58 @@ fun TopMenu(modifier: Modifier = Modifier) {
 
                 }
             }
-            Row(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Kotak,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "3D Design",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = OrangLagu,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "Art & Humanities",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Kotak,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                        )
+                        Text(
+                            text = "3D Design",
+                            modifier = Modifier.widthIn(max = 100.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = OrangLagu,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                        )
+                        Text(
+                            text = "Art & Humanities",
+                            modifier = Modifier.widthIn(max = 100.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Pelukis,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp),
+                        )
+                        Text(
+                            text = "Graphic Design",
+                            modifier = Modifier.widthIn(max = 100.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Pelukis,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "Graphic Design",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
 
 
-            /*LazyRow(
+                /*LazyRow(
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth(),
@@ -144,15 +150,17 @@ fun TopMenu(modifier: Modifier = Modifier) {
                 }*/
 
 
-        }
-    }
+            }
 
+
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TopMenuPreview() {
     LearnitTheme {
-        TopMenu()
+        val nav = androidx.navigation.compose.rememberNavController()
+        TopMenu(navController = nav)
     }
 }

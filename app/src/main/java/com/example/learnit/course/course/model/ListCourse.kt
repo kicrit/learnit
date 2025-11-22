@@ -13,7 +13,7 @@ val courseList = listOf(
         id = 1,
         descCourse = "Graphic Design",
         descCourse2 = "Graphic Design Advanced",
-        progressCourse = "Progress 90% >"
+        progressCourse = "Beginner"
     ),
     ListCourse(
         id = 2,

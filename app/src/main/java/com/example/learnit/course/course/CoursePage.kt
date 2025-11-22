@@ -1,6 +1,7 @@
 package com.example.learnit.course.course
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -19,28 +20,32 @@ import com.example.learnit.course.course.model.courseList
 @Composable
 fun CoursePage(modifier: Modifier, navController: NavController) {
     Scaffold(bottomBar = { BottomBar(modifier= Modifier, navController) }) { paddingValues ->
-        LazyColumn (
+        Column (
             modifier = Modifier
                 .padding(paddingValues)
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
                 CourseTopBar(modifier,navController)
-            }
-            itemsIndexed(courseList) { index, course ->
-                CourseCategory(
-                    listCourse = course,
-                    onClick = {
-                        when (index) {
-                            0 -> navController.navigate("webprogramming")
-                            1 -> navController.navigate("course_detail2")
-                            2 -> navController.navigate("course_detail3")
-                        }
-                    }
-                )
 
+            LazyColumn (
+                modifier = Modifier
+            ){
+                itemsIndexed(courseList) { index, course ->
+                    CourseCategory(
+                        listCourse = course,
+                        onClick = {
+                            when (index) {
+                                0 -> navController.navigate("webprogramming")
+                                1 -> navController.navigate("course_detail2")
+                                2 -> navController.navigate("course_detail3")
+                            }
+                        }
+                    )
+
+                }
             }
+
 
 
 

@@ -61,48 +61,7 @@ fun HomeTopBar(username: String) {
                 tint = Color(0xFF131BFF)
             )
         }
-        Spacer(modifier = Modifier.padding(16.dp))
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(12.dp),
-                    clip = false
-                )
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .fillMaxWidth()
-        ) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier
-                    .fillMaxWidth(),
-                leadingIcon = {
-                    Icon(
-                        imageVector = SearchHitam,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                },
-                placeholder = { Text("Search") },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    errorContainerColor = Color.Transparent,
 
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp)
-            )
-        }
 
     }
 }

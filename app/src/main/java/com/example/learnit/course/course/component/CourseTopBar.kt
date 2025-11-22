@@ -24,9 +24,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.gambar.SearchHitam
 
 
@@ -52,55 +54,14 @@ fun CourseTopBar(modifier: Modifier = Modifier, navController: NavController) {
                 fontWeight = FontWeight.Bold
             )
         }
-        Spacer(modifier = Modifier.padding(16.dp))
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(12.dp),
-                    clip = false
-                )
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .fillMaxWidth()
-        ) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                modifier = Modifier
-                    .fillMaxWidth(),
-                leadingIcon = {
-                    Icon(
-                        imageVector = SearchHitam,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp),
-                        tint = Color(0xFF131BFF)
-                    )
-                },
-                placeholder = {
-                    Text(
-                        "Search",
-                        color = Color(0xFFB4BDC4)
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    errorContainerColor = Color.Transparent,
 
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(12.dp)
-            )
-        }
 
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun CourseTopBarPreview() {
+    val navController = rememberNavController()
+    CourseTopBar(navController = navController)
+}

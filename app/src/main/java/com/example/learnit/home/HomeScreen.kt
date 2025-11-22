@@ -40,7 +40,7 @@ fun HomeScreen(
 ) {
 
     val authState = authViewModel.authState.observeAsState()
-    val username = userViewModel.username.observeAsState("username")
+    val username = userViewModel.username.observeAsState("User")
 
     LaunchedEffect(authState.value) {
         when (authState.value) {
@@ -59,7 +59,7 @@ fun HomeScreen(
                 Text("wenak signout")
             }
             HomeTopBar(username.value)
-            TopMenu()
+            TopMenu(modifier, navController)
             Row(
                 modifier = Modifier
                     .padding(16.dp)
