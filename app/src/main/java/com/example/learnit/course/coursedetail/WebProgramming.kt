@@ -26,14 +26,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,21 +78,21 @@ data class CourseVideo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WebProgramming(modifier: Modifier,navController: NavController) {
+fun WebProgramming(modifier: Modifier, navController: NavController) {
     val listState = rememberLazyListState()
     val scrollOffset = remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }
     val firstVisibleItemIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
     val myCourseVM: MyCourseViewModel = viewModel()
     val context = LocalContext.current
 
-    // NEW: Observe enrolled courses
     val myCourses by myCourseVM.myCourses.observeAsState(initial = emptyList())
-    // NEW: Check if this course is enrolled
     val isEnrolled = remember(myCourses) {
         myCourses.any { it.id == 1 } // ID 1 for Web Programming
     }
 
-    // Calculate fade based on scroll position
+    val videoCompletion by myCourseVM.videoCompletion.observeAsState(initial = emptyMap())
+    val progress = videoCompletion.count { it.value }.toFloat() / 5f // 5 total videos
+
     val descriptionAlpha by animateFloatAsState(
         targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 0f else 1f,
         animationSpec = tween(durationMillis = 300),
@@ -115,7 +118,7 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
     )
 
     val videos = listOf(
-        CourseVideo(1, "1. Introduction to Web Development", "Pengenalan dasar web development dan tools yang akan digunakan", "12:45", listOf(Color(0xFF667eea), Color(0xFF764ba2)), "S0Q4gqBUs7c"), // GUARANTEED TO BE EMBEDDABLE
+        CourseVideo(1, "1. Introduction to Web Development", "Pengenalan dasar web development dan tools yang akan digunakan", "12:45", listOf(Color(0xFF667eea), Color(0xFF764ba2)), "S0Q4gqBUs7c"),
         CourseVideo(2, "2. HTML & CSS Fundamentals", "Memahami struktur HTML dan styling dengan CSS", "18:32", listOf(Color(0xFFf093fb), Color(0xFFf5576c)), "91I1wzQv8n8"),
         CourseVideo(3, "3. JavaScript Basics", "Dasar-dasar JavaScript untuk interaktivitas website", "25:18", listOf(Color(0xFF4facfe), Color(0xFF00f2fe)), "W6NZfCO5eJo"),
         CourseVideo(4, "4. Responsive Web Design", "Membuat website yang responsif di berbagai perangkat", "22:05", listOf(Color(0xFF43e97b), Color(0xFF38f9d7)), "srvUrASNj0s"),
@@ -125,7 +128,6 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Header Background
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -140,7 +142,6 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                 )
         )
 
-        // Top Bar Back Button
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -174,7 +175,6 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                 Spacer(modifier = Modifier.height(240.dp))
             }
 
-            // Course Description Card
             item {
                 CourseInfoCard(
                     alpha = descriptionAlpha,
@@ -182,7 +182,6 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                 )
             }
 
-            // Videos Section
             item {
                 Box(
                     modifier = Modifier
@@ -200,34 +199,40 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black,
-                            modifier = Modifier.padding(bottom = 20.dp)
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        LinearProgressIndicator(
+                            progress = progress,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
             }
 
             items(videos) { video ->
+                val isCompleted = videoCompletion[video.id] == true
                 Box(
                     modifier = Modifier
                         .alpha(videosAlpha)
                         .offset(y = videosTranslationY.dp)
                 ) {
-                    VideoCard(video = video, onVideoClick = {
+                    VideoCard(video = video, isCompleted = isCompleted, onVideoClick = {
                         if (isEnrolled) {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=${video.videoId}"))
                             context.startActivity(intent)
                         } else {
                             Toast.makeText(context, "Please enroll to watch the videos", Toast.LENGTH_SHORT).show()
                         }
+                    }, onCheckChange = {
+                        myCourseVM.toggleVideoCompletion(1, video.id)
                     })
                 }
             }
 
             item {
-                Spacer(modifier = Modifier.height(100.dp)) // Added space for the button
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
-        // Enroll Button (fixed at bottom)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -237,7 +242,6 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
         ) {
             Button(
                 onClick = {
-                    // No action if already enrolled
                     if (!isEnrolled) {
                         val course = ListCourse(
                             id = 1, // <-- ID for Web Programming
@@ -264,7 +268,7 @@ fun WebProgramming(modifier: Modifier,navController: NavController) {
                     containerColor = if (isEnrolled) Color(0xFF4CAF50) else Color(0xFF1a73e8),
                     disabledContainerColor = Color(0xFF4CAF50)
                 ),
-                enabled = !isEnrolled // Button is disabled if enrolled
+                enabled = !isEnrolled
             ) {
                 Text(
                     text = if (isEnrolled) "Enrolled" else "Enroll Now",
@@ -292,7 +296,6 @@ fun CourseInfoCard(alpha: Float, scale: Float) {
         Column(
             modifier = Modifier.padding(24.dp)
         ) {
-            // Title
             Text(
                 text = "Web Programming",
                 fontSize = 32.sp,
@@ -302,7 +305,6 @@ fun CourseInfoCard(alpha: Float, scale: Float) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Meta Info
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -342,7 +344,6 @@ fun CourseInfoCard(alpha: Float, scale: Float) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Description
             Text(
                 text = "Kuasai dasar hingga lanjutan pengembangan web modern! Pelajari cara membangun website interaktif dari frontend (HTML, CSS, JavaScript) hingga backend dengan Node.js & Express.",
                 fontSize = 14.sp,
@@ -352,7 +353,6 @@ fun CourseInfoCard(alpha: Float, scale: Float) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Benefits
             Text(
                 text = "Setelah menyelesaikan kursus ini, kamu akan bisa:",
                 fontSize = 16.sp,
@@ -368,7 +368,6 @@ fun CourseInfoCard(alpha: Float, scale: Float) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Tools
             Row {
                 Text(
                     text = "Tools yang digunakan: ",
@@ -408,7 +407,7 @@ fun BenefitItem(text: String) {
 }
 
 @Composable
-fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
+fun VideoCard(video: CourseVideo, isCompleted: Boolean, onVideoClick: () -> Unit, onCheckChange: (Boolean) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -419,7 +418,6 @@ fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
-            // Video Thumbnail
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -432,7 +430,6 @@ fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
-                // Play Button
                 Box(
                     modifier = Modifier
                         .size(60.dp)
@@ -448,7 +445,6 @@ fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
                     )
                 }
 
-                // Duration Badge
                 Surface(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -466,22 +462,30 @@ fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
                 }
             }
 
-            // Video Info
-            Column(
-                modifier = Modifier.padding(16.dp)
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = video.title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = video.description,
-                    fontSize = 14.sp,
-                    color = Color(0xFF666666),
-                    lineHeight = 20.sp
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = video.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = video.description,
+                        fontSize = 14.sp,
+                        color = Color(0xFF666666),
+                        lineHeight = 20.sp
+                    )
+                }
+                Checkbox(
+                    checked = isCompleted,
+                    onCheckedChange = onCheckChange
                 )
             }
         }
@@ -493,9 +497,10 @@ fun VideoCard(video: CourseVideo, onVideoClick: () -> Unit) {
 fun WebProgrammingPreviewOnly() {
     WebProgramming(
         modifier = Modifier,
-        navController = rememberNavController() // NAV CONTROLLER PALSU, cocok untuk Preview
+        navController = rememberNavController()
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailPreview() {

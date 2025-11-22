@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +32,7 @@ fun CourseCategory(
     listCourse: ListCourse,
     onClick: () -> Unit
 ) {
+    val progress = (listCourse.progressCourse.removeSuffix("%").toFloatOrNull() ?: 0f) / 100f
     Card(
         modifier = Modifier
             .padding(24.dp)
@@ -63,8 +66,14 @@ fun CourseCategory(
                     listCourse.descCourse2,
                     fontWeight = FontWeight.SemiBold
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                LinearProgressIndicator(
+                    progress = progress,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    listCourse.progressCourse,
+                    "${(progress * 100).toInt()}% Complete",
                     color = Color(0xFF131BFF),
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -81,7 +90,7 @@ fun CourseCategoryPreview() {
         id = 1,
         descCourse = "Beginner",
         descCourse2 = "Basic Web Development",
-        progressCourse = "0%"
+        progressCourse = "50%"
     )
 
     CourseCategory(
