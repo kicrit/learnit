@@ -81,27 +81,8 @@ fun HomeScreen(
                     HomeCategory(listCourse = it)
                 }
             }
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Top Mentors",
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "SEE ALL >",
-                    color = Color(0xFF131BFF),
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            LazyRow {
-                items(mentorList) {
-                    MentorCategory(listMentor = it)
-                }
-            }
+
+
         }
     }
 

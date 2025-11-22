@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.course.coursedetail.WebProgramming
@@ -18,6 +19,7 @@ import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
 import com.example.learnit.profile.EditProfileScreen
 import com.example.learnit.profile.ProfileScreen
+import com.example.learnit.splash.SplashScreen
 import com.example.learnit.task.TaskViewModel
 import com.example.learnit.task.ui.TaskPage
 
@@ -26,7 +28,13 @@ import com.example.learnit.task.ui.TaskPage
 fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userViewModel: UserViewModel,taskViewModel: TaskViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login", builder = {
+    NavHost(navController = navController, startDestination = "splash", builder = {
+
+        composable("splash") {
+            // Pastikan authViewModel sudah diteruskan seperti ini
+            SplashScreen(navController = navController, authViewModel = authViewModel)
+        }
+
         composable("login") {
             ProfileSection(modifier, navController,authViewModel )
         }
@@ -53,6 +61,9 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
         }
         composable("mycourse") {
             MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })
+        }
+        composable("categories") {
+            AllCategoriesPage(modifier,navController)
         }
         composable(
             route = "videoplayer/{videoId}",

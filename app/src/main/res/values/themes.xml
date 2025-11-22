@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme untuk launcher activity: langsung translucent supaya Android splash hilang -->
+    <style name="Theme.Learnit.Translucent" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Jadikan window translucent -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Background transparan -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 
-    <style name="Theme.Learnit" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Theme untuk Compose SplashScreen -->
+    <style name="Theme.Learnit.Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Background putih atau bisa diganti sesuai desain -->
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- Theme utama aplikasi setelah splash -->
+    <style name="Theme.Learnit" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
 </resources>
