@@ -114,7 +114,7 @@ fun EmptyMyCourse() {
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.profile), // gunakan gambar kamu
+            painter = painterResource(id = R.drawable.avatar2), // gunakan gambar kamu
             contentDescription = null,
             modifier = Modifier.size(150.dp)
         )

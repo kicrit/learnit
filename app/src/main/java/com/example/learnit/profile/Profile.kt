@@ -42,7 +42,8 @@ class MockAuthViewModel : ViewModel() {
     val userData = MutableLiveData<Map<String, Any?>>(
         mapOf(
             "username" to "John Doe",
-            "email" to "john.doe@example.com"
+            "email" to "john.doe@example.com",
+            "avatarId" to 1
         )
     )
 
@@ -68,6 +69,10 @@ fun ProfileScreen(
     LaunchedEffect(true) {
         authViewModel.loadUserData()
     }
+
+    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3)
+    val selectedAvatarId = (userData.value?.get("avatarId") as? Long)?.toInt() ?: 1
+
     Scaffold(
         bottomBar = { BottomBar(modifier = Modifier, navController = navController) }
     ) { paddingValues ->
@@ -108,7 +113,7 @@ fun ProfileScreen(
 
 
             Image(
-                painter = painterResource(id = R.drawable.profile),
+                painter = painterResource(id = avatars[selectedAvatarId - 1]),
                 contentDescription = null,
                 modifier = Modifier
                     .size(120.dp)
@@ -155,7 +160,7 @@ fun ProfileScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clickable { 
                                 authViewModel.signout()           // SIGN OUT
                                 navController.navigate("login") { // Arahkan ke screen login
                                     popUpTo(0)                    // Hapus semua history

@@ -3,6 +3,7 @@ package com.example.learnit.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -35,19 +36,23 @@ fun EditProfileScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val userData = authViewModel.userData.observeAsState()
-    val updateState = authViewModel.updateState.observeAsState()
+    val userData by authViewModel.userData.observeAsState()
+    val updateState by authViewModel.updateState.observeAsState()
 
     var username by remember { mutableStateOf("") }
+    var selectedAvatarId by remember { mutableStateOf(1) }
 
-    LaunchedEffect(userData.value) {
-        userData.value?.let {
+    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3)
+
+    LaunchedEffect(userData) {
+        userData?.let {
             username = it["username"] as? String ?: ""
+            selectedAvatarId = (it["avatarId"] as? Long)?.toInt() ?: 1
         }
     }
 
-    LaunchedEffect(updateState.value) {
-        when (updateState.value) {
+    LaunchedEffect(updateState) {
+        when (updateState) {
             is UpdateState.Success -> {
                 navController.popBackStack()
                 authViewModel.resetUpdateState()
@@ -99,13 +104,38 @@ fun EditProfileScreen(
 
         // Profile picture
         Image(
-            painter = painterResource(id = R.drawable.profile),
+            painter = painterResource(id = avatars[selectedAvatarId - 1]),
             contentDescription = "Profile Picture",
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
                 .border(2.dp, primaryColor, CircleShape)
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Avatar selection
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            avatars.forEachIndexed { index, avatarResId ->
+                Image(
+                    painter = painterResource(id = avatarResId),
+                    contentDescription = "Avatar ${index + 1}",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = 2.dp,
+                            color = if (selectedAvatarId == index + 1) primaryColor else Color.Gray,
+                            shape = CircleShape
+                        )
+                        .clickable { selectedAvatarId = index + 1 }
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -128,7 +158,7 @@ fun EditProfileScreen(
 
         // Update Button
         Button(
-            onClick = { authViewModel.updateUsername(username) },
+            onClick = { authViewModel.updateProfile(username, selectedAvatarId) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -147,7 +177,7 @@ fun EditProfileScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                if (updateState.value == UpdateState.Loading) {
+                if (updateState == UpdateState.Loading) {
                     CircularProgressIndicator(color = Color.White)
                 } else {
                     Text(

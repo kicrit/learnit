@@ -36,29 +36,30 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    fun updateUsername(newUsername: String) {
+    fun updateProfile(newUsername: String, avatarId: Int) {
         val uid = auth.currentUser?.uid ?: run {
             _updateState.value = UpdateState.Error("User not logged in")
             return
         }
 
-        if (newUsername.isBlank()) {
-            _updateState.value = UpdateState.Error("Username cannot be empty")
-            return
-        }
-
         _updateState.value = UpdateState.Loading
+
+        val updates = mutableMapOf<String, Any>()
+        if (newUsername.isNotBlank()) {
+            updates["username"] = newUsername
+        }
+        updates["avatarId"] = avatarId
+
 
         db.collection("users")
             .document(uid)
-            .update("username", newUsername)
+            .update(updates)
             .addOnSuccessListener {
                 _updateState.value = UpdateState.Success
-                // also refresh user data
                 loadUserData()
             }
             .addOnFailureListener { e ->
-                _updateState.value = UpdateState.Error(e.message ?: "Failed to update username")
+                _updateState.value = UpdateState.Error(e.message ?: "Failed to update profile")
             }
     }
 
@@ -110,6 +111,7 @@ class AuthViewModel : ViewModel() {
                         "username" to username,
                         "email" to email,
                         "createdAt" to System.currentTimeMillis(),
+                        "avatarId" to 1, // Default avatar
                         "enrolledCourses" to emptyList<Int>()
                     )
 
@@ -135,18 +137,6 @@ class AuthViewModel : ViewModel() {
     fun signout() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
-    }
-
-    fun getUserData() {
-        val uid = auth.currentUser?.uid ?: return
-
-        db.collection("users")
-            .document(uid)
-            .get()
-            .addOnSuccessListener { doc ->
-                val username = doc.getString("username")
-                // lakukan sesuatu dengan username
-            }
     }
 
 }
