@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.learnit.course.course.model.ListCourse
 
@@ -71,5 +72,21 @@ fun CourseCategory(
         }
 
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CourseCategoryPreview() {
+    val sample = ListCourse(
+        id = 1,
+        descCourse = "Beginner",
+        descCourse2 = "Basic Web Development",
+        progressCourse = "0%"
+    )
+
+    CourseCategory(
+        listCourse = sample,
+        onClick = {}
+    )
 }
 

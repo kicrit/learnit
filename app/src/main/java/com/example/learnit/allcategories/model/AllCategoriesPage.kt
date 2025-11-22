@@ -9,21 +9,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.learnit.allcategories.component.CategoryItem
 import com.example.learnit.allcategories.component.CategoryMenu
 import com.example.learnit.allcategories.component.TopBar
+import com.example.learnit.gambar.Kotak
 import com.example.learnit.gambar.OrangLagu
 import com.example.learnit.gambar.Pelukis
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
-fun AllCategoriesPage(
+fun AllCategoriesPage(modifier: Modifier,navController: NavController,
     onBackClick: () -> Unit = {}
 ) {
     val categories = listOf(
-        CategoryItem("3D Design", Pelukis),
+        CategoryItem("3D Design", Kotak),
         CategoryItem("Arts & Humanities", OrangLagu),
-        CategoryItem("Graphic Design", Icons.Filled.ArrowBack),
+        CategoryItem("Graphic Design", Pelukis),
         CategoryItem("Content Editing", Icons.Filled.ArrowBack),
         CategoryItem("Programming", Icons.Filled.ArrowBack),
         CategoryItem("Photography", Icons.Filled.ArrowBack),
@@ -43,10 +45,3 @@ fun AllCategoriesPage(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AllCategoriesPagePreview() {
-    LearnitTheme {
-        AllCategoriesPage()
-    }
-}
