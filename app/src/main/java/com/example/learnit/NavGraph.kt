@@ -7,18 +7,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
+import com.example.learnit.category.CategoryDetailScreen
 import com.example.learnit.course.coursedetail.WebProgramming
 import com.example.learnit.course.course.CoursePage
+import com.example.learnit.course.videoplayer.VideoPlayerScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
 import com.example.learnit.mycourse.MyCourseScreen
 import com.example.learnit.profile.EditProfileScreen
 import com.example.learnit.profile.ProfileScreen
+import com.example.learnit.splash.SplashScreen
 import com.example.learnit.task.TaskViewModel
-import com.example.learnit.task.ui.AddEditTaskScreen
 import com.example.learnit.task.ui.TaskPage
 
 
@@ -26,46 +29,57 @@ import com.example.learnit.task.ui.TaskPage
 fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userViewModel: UserViewModel,taskViewModel: TaskViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login", modifier = modifier) {
+    NavHost(navController = navController, startDestination = "splash", builder = {
+
+        composable("splash") {
+            // Pastikan authViewModel sudah diteruskan seperti ini
+            SplashScreen(navController = navController, authViewModel = authViewModel)
+        }
+
         composable("login") {
-            ProfileSection(navController = navController, authViewModel = authViewModel)
+            ProfileSection(modifier, navController,authViewModel )
         }
         composable("register") {
-            RegisterSection(navController = navController, authViewModel = authViewModel)
+            RegisterSection(modifier, navController,authViewModel )
         }
         composable("home") {
-            HomeScreen(navController = navController, authViewModel = authViewModel, userViewModel = userViewModel)
+            HomeScreen(modifier, navController,authViewModel,userViewModel )
         }
         composable("profile") {
-            ProfileScreen(navController = navController, authViewModel = authViewModel)
+            ProfileScreen(modifier, navController,authViewModel)
         }
         composable("course") {
-            CoursePage(navController = navController)
+            CoursePage(modifier,navController)
         }
         composable("task") {
-            TaskPage(navController = navController, viewModel = taskViewModel)
-        }
-        composable(
-            route = "addtask?taskId={taskId}",
-            arguments = listOf(navArgument("taskId") {
-                type = NavType.StringType
-                nullable = true
-            })
-        ) { backStackEntry ->
-            AddEditTaskScreen(
-                navController = navController,
-                taskViewModel = taskViewModel,
-                taskId = backStackEntry.arguments?.getString("taskId")
-            )
+            TaskPage(modifier,navController, taskViewModel)
         }
         composable("editprofile") {
-            EditProfileScreen(navController = navController, authViewModel = authViewModel)
+            EditProfileScreen(modifier,navController, authViewModel)
         }
         composable("webprogramming") {
-            WebProgramming(navController = navController)
+            WebProgramming(modifier,navController)
         }
         composable("mycourse") {
-            MyCourseScreen(navController = navController, navBack = { navController.popBackStack() })
+            MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })
         }
-    }
+        composable("categories") {
+            AllCategoriesPage(modifier,navController)
+        }
+        composable(
+            route = "videoplayer/{videoId}",
+            arguments = listOf(navArgument("videoId") { type = NavType.StringType })
+        ) {
+            val videoId = it.arguments?.getString("videoId") ?: ""
+            VideoPlayerScreen(navController = navController, videoId = videoId)
+        }
+        composable(
+            route = "category/{categoryName}",
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) {
+            val categoryName = it.arguments?.getString("categoryName") ?: ""
+            CategoryDetailScreen(navController = navController, category = categoryName)
+        }
+
+    })
 }

@@ -4,7 +4,8 @@ data class ListCourse(
     val id : Int,
     val descCourse: String,
     val descCourse2: String,
-    val progressCourse: String
+    val progressCourse: String,
+    val category: String // Added category
 
 )
 
@@ -13,30 +14,35 @@ val courseList = listOf(
         id = 1,
         descCourse = "Graphic Design",
         descCourse2 = "Graphic Design Advanced",
-        progressCourse = "Beginner"
+        progressCourse = "Beginner",
+        category = "Graphic Design"
     ),
     ListCourse(
         id = 2,
-        descCourse = "sd",
-        descCourse2 = "sd w",
-        progressCourse = "progres 901%"
+        descCourse = "3D Design",
+        descCourse2 = "3D Blender Beginner",
+        progressCourse = "Beginner",
+        category = "3D Design"
     ),
     ListCourse(
         id = 3,
-        descCourse = "we",
-        descCourse2 = "we lawswwwk",
-        progressCourse = "progres 902%"
+        descCourse = "Art & Humanities",
+        descCourse2 = "The Art of Sketching",
+        progressCourse = "Beginner",
+        category = "Art & Humanities"
     ),
     ListCourse(
         id = 4,
-        descCourse = "vsdv",
-        descCourse2 = "sdv lawsk",
-        progressCourse = "progres 903%"
+        descCourse = "Graphic Design",
+        descCourse2 = "UI/UX with Figma",
+        progressCourse = "Intermediate",
+        category = "Graphic Design"
     ),
     ListCourse(
         id = 5,
-        descCourse = "123",
-        descCourse2 = "sd v",
-        progressCourse = "progres 904%"
+        descCourse = "3D Design",
+        descCourse2 = "Advanced 3D Sculpting",
+        progressCourse = "Advanced",
+        category = "3D Design"
     ),
 )

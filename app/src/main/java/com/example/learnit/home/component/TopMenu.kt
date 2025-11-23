@@ -2,6 +2,7 @@ package com.example.learnit.home.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,7 +60,7 @@ fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(onClick = { navController.navigate("categories") }) {
+                TextButton(onClick = { navController.navigate("course") }) {
                     Text(
                         text = "SEE ALL >",
                         color = Color(0xFF131BFF),
@@ -80,7 +81,10 @@ fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable { navController.navigate("category/3D Design") }
+                    ) {
                         Icon(
                             imageVector = Kotak,
                             contentDescription = null,
@@ -92,7 +96,10 @@ fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
                             textAlign = TextAlign.Center
                         )
                     }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable { navController.navigate("category/Art & Humanities") }
+                    ) {
                         Icon(
                             imageVector = OrangLagu,
                             contentDescription = null,
@@ -104,7 +111,10 @@ fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
                             textAlign = TextAlign.Center
                         )
                     }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable { navController.navigate("category/Graphic Design") }
+                    ) {
                         Icon(
                             imageVector = Pelukis,
                             contentDescription = null,

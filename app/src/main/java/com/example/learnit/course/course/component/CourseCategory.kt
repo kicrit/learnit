@@ -90,7 +90,8 @@ fun CourseCategoryPreview() {
         id = 1,
         descCourse = "Beginner",
         descCourse2 = "Basic Web Development",
-        progressCourse = "50%"
+        progressCourse = "50%",
+        category = "Web Development"
     )
 
     CourseCategory(

@@ -247,7 +247,8 @@ fun WebProgramming(modifier: Modifier = Modifier, navController: NavController) 
                             id = 1, // <-- ID for Web Programming
                             descCourse = "Web Programming",
                             descCourse2 = "Complete Web Programming",
-                            progressCourse = "0%"
+                            progressCourse = "0%",
+                            category = "Web Development" // Added category
                         )
                         myCourseVM.enrollCourse(
                             course = course,

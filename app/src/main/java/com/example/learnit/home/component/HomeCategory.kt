@@ -61,11 +61,3 @@ fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
 
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun HomeCategoryPreview() {
-    LearnitTheme {
-        HomeCategory(listCourse = ListCourse(id=1,"s","s","s"))
-    }
-}

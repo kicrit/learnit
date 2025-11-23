@@ -36,7 +36,8 @@ class MyCourseViewModel : ViewModel() {
                         id = doc.getLong("id")?.toInt() ?: return@mapNotNull null,
                         descCourse = doc.getString("title") ?: "",
                         descCourse2 = doc.getString("desc") ?: "",
-                        progressCourse = doc.getString("progress") ?: "0%"
+                        progressCourse = doc.getString("progress") ?: "0%",
+                        category = doc.getString("category") ?: ""
                     )
                 } ?: emptyList()
 
@@ -63,6 +64,7 @@ class MyCourseViewModel : ViewModel() {
                 "title" to course.descCourse,
                 "desc" to course.descCourse2,
                 "progress" to course.progressCourse,
+                "category" to course.category,
                 "completed_videos" to emptyList<Int>()
             )
 
