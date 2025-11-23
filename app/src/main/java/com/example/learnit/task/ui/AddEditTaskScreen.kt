@@ -40,11 +40,46 @@ fun AddEditTaskScreen(
     val isEditing = taskId != null
     val screenTitle = if (isEditing) "Edit Task" else "Add Task"
 
-    // State for form fields
+    val task by taskViewModel.selectedTask.observeAsState()
+
     var title by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     var deadlineDate by remember { mutableStateOf<Date?>(null) }
     var deadlineTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+
+    // Effect to fetch task data when editing, or reset when adding
+    LaunchedEffect(taskId) {
+        if (isEditing) {
+            taskViewModel.getTaskById(taskId!!)
+        } else {
+            // **THE FIX**: Forcibly reset all states for a new task
+            taskViewModel.clearSelectedTask()
+            title = ""
+            notes = ""
+            deadlineDate = null
+            deadlineTime = null
+        }
+    }
+
+    // Effect to populate the form once the task data is loaded for editing
+    LaunchedEffect(task) {
+        if (isEditing && task != null) {
+            title = task!!.title
+            notes = task!!.notes
+            try {
+                val fullDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
+                val parsedDate = fullDateFormat.parse(task!!.deadline)
+                parsedDate?.let { date ->
+                    deadlineDate = date
+                    val cal = Calendar.getInstance().apply { time = date }
+                    deadlineTime = Pair(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
+                }
+            } catch (e: Exception) {
+                deadlineDate = null
+                deadlineTime = null
+            }
+        }
+    }
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
@@ -52,51 +87,14 @@ fun AddEditTaskScreen(
     val datePickerState = rememberDatePickerState()
     val timePickerState = rememberTimePickerState()
     val isLoading by taskViewModel.loading.observeAsState(false)
-    val task by taskViewModel.selectedTask.observeAsState()
 
     val dateFormatter = remember { SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")) }
-    val timeFormatter = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
-
-    // Pre-fill form if editing
-    LaunchedEffect(taskId) {
-        if (isEditing) {
-            taskViewModel.getTaskById(taskId!!)
-        } else {
-            taskViewModel.clearSelectedTask()
-        }
-    }
-
-    LaunchedEffect(task) {
-        task?.let {
-            title = it.title
-            notes = it.notes
-            try {
-                // Parse deadline string e.g., "dd MMMM yyyy, HH:mm"
-                val fullDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
-                val parsedDate = fullDateFormat.parse(it.deadline)
-                parsedDate?.let { date ->
-                    deadlineDate = date
-                    val cal = Calendar.getInstance()
-                    cal.time = date
-                    deadlineTime = Pair(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
-                    datePickerState.selectedDateMillis = cal.timeInMillis
-                    timePickerState.hour = cal.get(Calendar.HOUR_OF_DAY)
-                    timePickerState.minute = cal.get(Calendar.MINUTE)
-                }
-            } catch (e: Exception) {
-                // Handle parsing error if format is unexpected
-                deadlineDate = null
-                deadlineTime = null
-            }
-        }
-    }
-
 
     val selectedDateText = deadlineDate?.let { dateFormatter.format(it) }
     val selectedTimeText = deadlineTime?.let { String.format(Locale.getDefault(), "%02d:%02d", it.first, it.second) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White)
     ) {

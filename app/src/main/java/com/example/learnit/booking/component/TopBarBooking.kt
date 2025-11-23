@@ -24,7 +24,7 @@ import com.example.learnit.ui.theme.LearnitTheme
 fun TopBarBooking() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
-            painter = painterResource(id = R.drawable.avatar2),
+            painter = painterResource(id = R.drawable.avatar3),
             contentDescription = null,
             modifier = Modifier
                 .size(120.dp)

@@ -70,7 +70,7 @@ fun ProfileScreen(
         authViewModel.loadUserData()
     }
 
-    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3)
+    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar3)
     val selectedAvatarId = (userData.value?.get("avatarId") as? Long)?.toInt() ?: 1
 
     Scaffold(

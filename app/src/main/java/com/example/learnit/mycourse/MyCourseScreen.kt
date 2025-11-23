@@ -1,4 +1,4 @@
-package com.example.learnit.course.mycourse
+package com.example.learnit.mycourse
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,6 +34,7 @@ import com.example.learnit.R
 import com.example.learnit.component.BottomBar
 import com.example.learnit.course.course.component.CourseCategory
 import com.example.learnit.course.course.model.ListCourse
+import com.example.learnit.course.mycourse.MyCourseViewModel
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
@@ -111,7 +112,7 @@ fun EmptyMyCourse() {
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.avatar2), // gunakan gambar kamu
+            painter = painterResource(id = R.drawable.avatar3), // gunakan gambar kamu
             contentDescription = null,
             modifier = Modifier.size(150.dp)
         )

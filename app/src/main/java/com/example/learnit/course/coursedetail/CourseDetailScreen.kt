@@ -58,6 +58,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -74,7 +75,6 @@ fun CourseDetailScreen(navController: NavController, courseId: Int) {
     val courseDetails = courseDetailsMap[courseId]
 
     if (courseDetails == null) {
-        // Handle case where course is not found
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Course not found!")
         }
@@ -100,219 +100,263 @@ fun CourseDetailScreen(navController: NavController, courseId: Int) {
         videoCompletion.count { it.value }.toFloat() / courseDetails.videos.size.toFloat()
     } else 0f
 
-    val descriptionAlpha by animateFloatAsState(
-        targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 0f else 1f,
-        animationSpec = tween(durationMillis = 300),
-        label = "description_alpha"
+    // Calculate scroll progress for animations (0 to 1)
+    val scrollProgress = remember {
+        derivedStateOf {
+            if (firstVisibleItemIndex.value == 0) {
+                (scrollOffset.value.toFloat() / 300f).coerceIn(0f, 1f)
+            } else {
+                1f
+            }
+        }
+    }
+
+    // Header image fade out
+    val headerImageAlpha by animateFloatAsState(
+        targetValue = 1f - scrollProgress.value,
+        animationSpec = tween(durationMillis = 200),
+        label = "header_image_alpha"
     )
 
-    val descriptionScale by animateFloatAsState(
-        targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 0.95f else 1f,
-        animationSpec = tween(durationMillis = 300),
-        label = "description_scale"
+    // Course title in body fade out
+    val bodyTitleAlpha by animateFloatAsState(
+        targetValue = 1f - scrollProgress.value,
+        animationSpec = tween(durationMillis = 200),
+        label = "body_title_alpha"
     )
 
-    val videosAlpha by animateFloatAsState(
-        targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 1f else 0f,
-        animationSpec = tween(durationMillis = 400),
-        label = "videos_alpha"
+    // Course title in header fade in
+    val headerTitleAlpha by animateFloatAsState(
+        targetValue = scrollProgress.value,
+        animationSpec = tween(durationMillis = 200),
+        label = "header_title_alpha"
     )
 
-    val videosTranslationY by animateFloatAsState(
-        targetValue = if (firstVisibleItemIndex.value > 0 || scrollOffset.value > 300) 0f else 40f,
-        animationSpec = tween(durationMillis = 400),
-        label = "videos_translation"
-    )
-
-    Scaffold {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fixed header image at top (fades out on scroll) - MOVED HERE FIRST
         Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .alpha(headerImageAlpha)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF1a1a1a),
+                            Color(0xFF0a0a0a)
+                        )
+                    )
+                )
+        )
+
+        LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF1a1a1a),
-                                Color(0xFF0a0a0a)
-                            )
-                        )
-                    )
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp, start = 20.dp, end = 20.dp)
-                    .align(Alignment.TopStart),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = "Course Detail",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            // Spacer for header image area - smaller to show more white card
+            item {
+                Spacer(modifier = Modifier.height(120.dp))
             }
 
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(240.dp))
-                }
-
-                item {
-                    CourseInfoCard(
-                        alpha = descriptionAlpha,
-                        scale = descriptionScale,
-                        details = courseDetails
-                    )
-                }
-
-                item {
-                    Column(
-                        modifier = Modifier
-                            .alpha(videosAlpha)
-                            .offset(y = videosTranslationY.dp)
-                            .background(Color.White)
-                            .padding(24.dp)
-                    ) {
+            // White card with course info
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        // Course title that fades out on scroll
                         Text(
-                            text = "Course Videos",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.Black,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                            text = courseDetails.title,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.alpha(bodyTitleAlpha)
                         )
-                        LinearProgressIndicator(
-                            progress = progress,
-                            modifier = Modifier.fillMaxWidth()
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Price, Rating, Students row
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.alpha(bodyTitleAlpha)
+                        ) {
+                            Text(text = courseDetails.price, fontSize = 14.sp, color = Color(0xFF666666))
+                            Text(text = "|", color = Color(0xFF666666))
+                            Text(text = "⭐ ${courseDetails.rating}", fontSize = 14.sp, color = Color(0xFFf59e0b), fontWeight = FontWeight.SemiBold)
+                            Text(text = "|", color = Color(0xFF666666))
+                            Text(text = courseDetails.students, fontSize = 14.sp, color = Color(0xFF666666))
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "Level: ${courseDetails.level}",
+                            fontSize = 14.sp,
+                            color = Color(0xFF888888),
+                            fontStyle = FontStyle.Italic,
+                            modifier = Modifier.alpha(bodyTitleAlpha)
                         )
-                    }
-                }
 
-                items(courseDetails.videos) { video ->
-                    val isCompleted = videoCompletion[video.id] == true
-                    Box(
-                        modifier = Modifier
-                            .alpha(videosAlpha)
-                            .offset(y = videosTranslationY.dp)
-                    ) {
-                        VideoCard(video = video, isCompleted = isCompleted, onVideoClick = {
-                            if (isEnrolled) {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=${video.videoId}"))
-                                context.startActivity(intent)
-                            } else {
-                                Toast.makeText(context, "Please enroll to watch the videos", Toast.LENGTH_SHORT).show()
-                            }
-                        }, onCheckChange = {
-                            myCourseVM.toggleVideoCompletion(courseId, video.id)
-                        })
+                        Spacer(modifier = Modifier.height(20.dp))
+                        HorizontalDivider(color = Color(0xFFe5e5e5))
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(text = courseDetails.description, style = MaterialTheme.typography.bodyMedium, lineHeight = 22.sp)
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(text = "Setelah menyelesaikan kursus ini, kamu akan bisa:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        courseDetails.benefits.forEach { DetailBenefitItem(it) }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Row {
+                            Text(text = "Tools yang digunakan: ", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text(text = courseDetails.tools, fontSize = 14.sp, color = Color(0xFF333333))
+                        }
                     }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(100.dp))
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(Color.White)
-                    .padding(20.dp)
-            ) {
-                Button(
-                    onClick = {
-                        if (!isEnrolled) {
-                            val course = ListCourse(
-                                id = courseDetails.id,
-                                descCourse = courseDetails.title,
-                                descCourse2 = courseDetails.description.take(50) + "...",
-                                progressCourse = "0%",
-                                category = courseDetails.category
-                            )
-                            myCourseVM.enrollCourse(
-                                course = course,
-                                onSuccess = { navController.navigate("mycourse") },
-                                onFail = { msg -> println("ENROLL ERROR: $msg") }
-                            )
-                        }
-                    },
+
+            // Course Videos section
+            item {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isEnrolled) Color(0xFF4CAF50) else Color(0xFF1a73e8),
-                        disabledContainerColor = Color(0xFF4CAF50)
-                    ),
-                    enabled = !isEnrolled
+                        .background(Color.White)
+                        .padding(24.dp)
                 ) {
                     Text(
-                        text = if (isEnrolled) "Enrolled" else "Enroll Now",
+                        text = "Course Videos",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    LinearProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            // Video list
+            items(courseDetails.videos) { video ->
+                val isCompleted = videoCompletion[video.id] == true
+                Box(modifier = Modifier.background(Color.White)) {
+                    VideoCard(video = video, isCompleted = isCompleted, onVideoClick = {
+                        if (isEnrolled) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=${video.videoId}"))
+                            context.startActivity(intent)
+                        } else {
+                            Toast.makeText(context, "Please enroll to watch the videos", Toast.LENGTH_SHORT).show()
+                        }
+                    }, onCheckChange = {
+                        myCourseVM.toggleVideoCompletion(courseId, video.id)
+                    })
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
+
+        // Top header bar with white background that appears on scroll
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter),
+            color = Color.White.copy(alpha = scrollProgress.value),
+            shadowElevation = if (scrollProgress.value > 0.5f) 4.dp else 0.dp
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp, bottom = 12.dp, start = 20.dp, end = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = if (scrollProgress.value > 0.5f) Color.Black else Color.White
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    // Title that fades in on scroll
+                    Box(modifier = Modifier.weight(1f)) {
+                        // "Course Detail" text - fades out
+                        Text(
+                            text = "Course Detail",
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.alpha(1f - headerTitleAlpha)
+                        )
+
+                        // Course title - fades in
+                        Text(
+                            text = courseDetails.title,
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.alpha(headerTitleAlpha)
+                        )
+                    }
+                }
+                // Bottom border line
+                if (scrollProgress.value > 0.5f) {
+                    HorizontalDivider(
+                        color = Color(0xFFe5e5e5),
+                        thickness = 1.dp
                     )
                 }
             }
         }
-    }
-}
 
-@Composable
-fun CourseInfoCard(alpha: Float, scale: Float, details: CourseDetails) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(alpha)
-            .scale(scale)
-            .padding(horizontal = 0.dp),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier.padding(24.dp)
+        // Bottom enroll button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(Color.White)
+                .padding(20.dp)
         ) {
-            Text(
-                text = details.title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            Button(
+                onClick = {
+                    if (!isEnrolled) {
+                        val course = ListCourse(
+                            id = courseDetails.id,
+                            descCourse = courseDetails.title,
+                            descCourse2 = courseDetails.description.take(50) + "...",
+                            progressCourse = "0%",
+                            category = courseDetails.category
+                        )
+                        myCourseVM.enrollCourse(
+                            course = course,
+                            onSuccess = { navController.navigate("mycourse") },
+                            onFail = { msg -> println("ENROLL ERROR: $msg") }
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isEnrolled) Color(0xFF4CAF50) else Color(0xFF1a73e8),
+                    disabledContainerColor = Color(0xFF4CAF50)
+                ),
+                enabled = !isEnrolled
             ) {
-                Text(text = details.price, fontSize = 14.sp, color = Color(0xFF666666))
-                Text(text = "|", color = Color(0xFF666666))
-                Text(text = "⭐ ${details.rating}", fontSize = 14.sp, color = Color(0xFFf59e0b), fontWeight = FontWeight.SemiBold)
-                Text(text = "|", color = Color(0xFF666666))
-                Text(text = details.students, fontSize = 14.sp, color = Color(0xFF666666))
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Level: ${details.level}", fontSize = 14.sp, color = Color(0xFF888888), fontStyle = FontStyle.Italic)
-            Spacer(modifier = Modifier.height(20.dp))
-            HorizontalDivider(color = Color(0xFFe5e5e5))
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(text = details.description, style = MaterialTheme.typography.bodyMedium, lineHeight = 22.sp)
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Setelah menyelesaikan kursus ini, kamu akan bisa:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            Spacer(modifier = Modifier.height(12.dp))
-            details.benefits.forEach { DetailBenefitItem(it) }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row {
-                Text(text = "Tools yang digunakan: ", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text(text = details.tools, fontSize = 14.sp, color = Color(0xFF333333))
+                Text(
+                    text = if (isEnrolled) "Enrolled" else "Enroll Now",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
         }
     }
@@ -335,7 +379,6 @@ fun VideoCard(video: CourseVideo, isCompleted: Boolean, onVideoClick: () -> Unit
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
-            .background(Color.White) // Added background to make it visible
             .clickable { onVideoClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFf9fafb)),

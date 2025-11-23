@@ -12,16 +12,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.learnit.component.BottomBar
 import com.example.learnit.course.course.component.CourseCategory
 import com.example.learnit.course.course.component.CourseTopBar
 import com.example.learnit.course.course.model.courseList
 import com.example.learnit.course.mycourse.MyCourseViewModel
-import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
@@ -46,19 +43,13 @@ fun CoursePage(modifier: Modifier = Modifier, navController: NavController, myCo
 
                     CourseCategory(
                         listCourse = updatedCourse,
-                        onClick = { navController.navigate("course/${course.id}") }
+                        onClick = {
+                            navController.navigate("course/${course.id}")
+                        }
                     )
 
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CoursePagePreview() {
-    LearnitTheme {
-        CoursePage(modifier = Modifier, navController = rememberNavController())
     }
 }

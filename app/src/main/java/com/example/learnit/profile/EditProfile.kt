@@ -42,7 +42,7 @@ fun EditProfileScreen(
     var username by remember { mutableStateOf("") }
     var selectedAvatarId by remember { mutableStateOf(1) }
 
-    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3)
+    val avatars = listOf(R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar3)
 
     LaunchedEffect(userData) {
         userData?.let {

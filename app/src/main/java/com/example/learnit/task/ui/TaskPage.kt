@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import com.example.learnit.task.TaskViewModel
 import com.example.learnit.task.component.TaskList
 import com.example.learnit.task.component.TopTaskBar
-import com.example.learnit.task.model.TaskItem
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,7 +36,6 @@ fun TaskPage(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val tasks by viewModel.tasks.observeAsState(emptyList())
-    val loading by viewModel.loading.observeAsState(false)
     val error by viewModel.error.observeAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -59,7 +57,7 @@ fun TaskPage(
         TopTaskBar(
             title = "Task List",
             onBackClick = { navController.popBackStack() },
-            onAddClick = { navController.navigate("addtask") }
+            onAddClick = { navController.navigate("addtask") } // Ensure this matches NavGraph
         )
         Spacer(modifier = Modifier.height(8.dp))
         Box(
@@ -70,7 +68,7 @@ fun TaskPage(
                 Text(
                     text = "No tasks yet.",
                     color = Color.Gray,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(16.dp).align(Alignment.Center)
                 )
             } else {
                 TaskList(
