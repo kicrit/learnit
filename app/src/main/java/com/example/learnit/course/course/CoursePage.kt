@@ -22,12 +22,12 @@ import com.example.learnit.course.mycourse.MyCourseViewModel
 
 
 @Composable
-fun CoursePage(modifier: Modifier, navController: NavController, myCourseViewModel: MyCourseViewModel = viewModel()) {
+fun CoursePage(modifier: Modifier = Modifier, navController: NavController, myCourseViewModel: MyCourseViewModel = viewModel()) {
     val myCourses by myCourseViewModel.myCourses.observeAsState(initial = emptyList())
 
     Scaffold(bottomBar = { BottomBar(modifier= Modifier, navController) }) { paddingValues ->
         Column (
-            modifier = Modifier
+            modifier = modifier
                 .padding(paddingValues)
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally

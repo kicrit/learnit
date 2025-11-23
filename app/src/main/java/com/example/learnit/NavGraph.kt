@@ -7,20 +7,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.course.coursedetail.WebProgramming
 import com.example.learnit.course.course.CoursePage
-import com.example.learnit.course.mycourse.MyCourseScreen
-import com.example.learnit.course.videoplayer.VideoPlayerScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
+import com.example.learnit.mycourse.MyCourseScreen
 import com.example.learnit.profile.EditProfileScreen
 import com.example.learnit.profile.ProfileScreen
-import com.example.learnit.splash.SplashScreen
 import com.example.learnit.task.TaskViewModel
+import com.example.learnit.task.ui.AddEditTaskScreen
 import com.example.learnit.task.ui.TaskPage
 
 
@@ -28,50 +26,46 @@ import com.example.learnit.task.ui.TaskPage
 fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userViewModel: UserViewModel,taskViewModel: TaskViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "splash", builder = {
-
-        composable("splash") {
-            // Pastikan authViewModel sudah diteruskan seperti ini
-            SplashScreen(navController = navController, authViewModel = authViewModel)
-        }
-
+    NavHost(navController = navController, startDestination = "login", modifier = modifier) {
         composable("login") {
-            ProfileSection(modifier, navController,authViewModel )
+            ProfileSection(navController = navController, authViewModel = authViewModel)
         }
         composable("register") {
-            RegisterSection(modifier, navController,authViewModel )
+            RegisterSection(navController = navController, authViewModel = authViewModel)
         }
         composable("home") {
-            HomeScreen(modifier, navController,authViewModel,userViewModel )
+            HomeScreen(navController = navController, authViewModel = authViewModel, userViewModel = userViewModel)
         }
         composable("profile") {
-            ProfileScreen(modifier, navController,authViewModel)
+            ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
         composable("course") {
-            CoursePage(modifier,navController)
+            CoursePage(navController = navController)
         }
         composable("task") {
-            TaskPage(modifier,navController, taskViewModel)
-        }
-        composable("editprofile") {
-            EditProfileScreen(modifier,navController, authViewModel)
-        }
-        composable("webprogramming") {
-            WebProgramming(modifier,navController)
-        }
-        composable("mycourse") {
-            MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })
-        }
-        composable("categories") {
-            AllCategoriesPage(modifier,navController)
+            TaskPage(navController = navController, viewModel = taskViewModel)
         }
         composable(
-            route = "videoplayer/{videoId}",
-            arguments = listOf(navArgument("videoId") { type = NavType.StringType })
-        ) {
-            val videoId = it.arguments?.getString("videoId") ?: ""
-            VideoPlayerScreen(navController = navController, videoId = videoId)
+            route = "addtask?taskId={taskId}",
+            arguments = listOf(navArgument("taskId") {
+                type = NavType.StringType
+                nullable = true
+            })
+        ) { backStackEntry ->
+            AddEditTaskScreen(
+                navController = navController,
+                taskViewModel = taskViewModel,
+                taskId = backStackEntry.arguments?.getString("taskId")
+            )
         }
-
-    })
+        composable("editprofile") {
+            EditProfileScreen(navController = navController, authViewModel = authViewModel)
+        }
+        composable("webprogramming") {
+            WebProgramming(navController = navController)
+        }
+        composable("mycourse") {
+            MyCourseScreen(navController = navController, navBack = { navController.popBackStack() })
+        }
+    }
 }

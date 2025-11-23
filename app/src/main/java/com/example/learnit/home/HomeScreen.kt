@@ -33,7 +33,7 @@ import com.example.learnit.home.model.mentorList
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     navController: NavController,
     authViewModel: AuthViewModel,
     userViewModel : UserViewModel
@@ -51,7 +51,7 @@ fun HomeScreen(
 
     Scaffold(bottomBar = { BottomBar(modifier = Modifier, navController) }) { paddingValues ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {

@@ -78,7 +78,7 @@ data class CourseVideo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WebProgramming(modifier: Modifier, navController: NavController) {
+fun WebProgramming(modifier: Modifier = Modifier, navController: NavController) {
     val listState = rememberLazyListState()
     val scrollOffset = remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }
     val firstVisibleItemIndex = remember { derivedStateOf { listState.firstVisibleItemIndex } }
@@ -126,7 +126,7 @@ fun WebProgramming(modifier: Modifier, navController: NavController) {
     )
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier

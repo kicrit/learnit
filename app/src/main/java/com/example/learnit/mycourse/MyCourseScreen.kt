@@ -1,4 +1,4 @@
-package com.example.learnit.course.mycourse
+package com.example.learnit.mycourse
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -32,10 +32,11 @@ import com.example.learnit.R
 import com.example.learnit.component.BottomBar
 import com.example.learnit.course.course.component.CourseCategory
 import com.example.learnit.course.course.model.ListCourse
+import com.example.learnit.course.mycourse.MyCourseViewModel
 
 @Composable
 fun MyCourseScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: MyCourseViewModel = viewModel(),
     navBack: () -> Unit
@@ -44,7 +45,7 @@ fun MyCourseScreen(
 
     Scaffold(bottomBar = { BottomBar(modifier = Modifier, navController = navController) }) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(it)
         ) {

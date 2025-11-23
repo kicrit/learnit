@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.compose.runtime.livedata)
     implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation(libs.androidx.foundation)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.runtime)

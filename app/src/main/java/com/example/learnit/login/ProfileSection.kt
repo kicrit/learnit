@@ -23,7 +23,7 @@ import com.example.learnit.auth.AuthViewModel
 
 @Composable
 fun ProfileSection(
-    modifier: Modifier, navController: NavController, authViewModel: AuthViewModel
+    modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel
 ) {
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -43,7 +43,7 @@ fun ProfileSection(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize() // ubah jadi fillMaxSize biar bisa ngatur jarak vertikal penuh
             .background(Color.White)
             .padding(horizontal = 24.dp, vertical = 48.dp),

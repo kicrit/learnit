@@ -1,12 +1,21 @@
 package com.example.learnit.task.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,12 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.learnit.task.TaskViewModel
+import com.example.learnit.task.component.TaskList
 import com.example.learnit.task.component.TopTaskBar
 import com.example.learnit.task.model.TaskItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun TaskPage(modifier: Modifier,
+fun TaskPage(
+    modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: TaskViewModel = viewModel()
 ) {
@@ -31,9 +42,6 @@ fun TaskPage(modifier: Modifier,
 
     val coroutineScope = rememberCoroutineScope()
 
-    var showAddDialog by remember { mutableStateOf(false) }
-    var editingTask by remember { mutableStateOf<TaskItem?>(null) }
-
     LaunchedEffect(error) {
         error?.let {
             coroutineScope.launch {
@@ -44,25 +52,31 @@ fun TaskPage(modifier: Modifier,
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
         TopTaskBar(
             title = "Task List",
             onBackClick = { navController.popBackStack() },
-            onAddClick = { showAddDialog = true }
+            onAddClick = { navController.navigate("addtask") }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             if (tasks.isEmpty()) {
-                Text(text = "Belum ada tugas", color = Color.Gray, modifier = Modifier.padding(8.dp))
+                Text(
+                    text = "No tasks yet.",
+                    color = Color.Gray,
+                    modifier = Modifier.padding(8.dp)
+                )
             } else {
                 TaskList(
                     tasks = tasks,
                     onEdit = { task ->
-                        editingTask = task
-                        showAddDialog = true
+                        navController.navigate("addtask?taskId=${task.id}")
                     },
                     onDelete = { task ->
                         viewModel.deleteTask(task.id) { success, err ->
@@ -74,32 +88,10 @@ fun TaskPage(modifier: Modifier,
                 )
             }
 
-            // snackbar
-            SnackbarHost(hostState = snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
-    }
-
-    if (showAddDialog) {
-        AddEditTaskDialog(
-            initial = editingTask,
-            onDismiss = {
-                showAddDialog = false
-                editingTask = null
-            },
-            onSave = { title, notes, deadline ->
-                if (editingTask == null) {
-                    viewModel.addTask(title, notes, deadline) { success, err ->
-                        if (!success && err != null) coroutineScope.launch { snackbarHostState.showSnackbar(err) }
-                    }
-                } else {
-                    val updated = editingTask!!.copy(title = title, notes = notes, deadline = deadline)
-                    viewModel.updateTask(updated) { success, err ->
-                        if (!success && err != null) coroutineScope.launch { snackbarHostState.showSnackbar(err) }
-                    }
-                }
-                showAddDialog = false
-                editingTask = null
-            }
-        )
     }
 }
