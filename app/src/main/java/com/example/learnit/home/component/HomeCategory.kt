@@ -1,6 +1,7 @@
 package com.example.learnit.home.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,12 +26,13 @@ import com.example.learnit.ui.theme.LearnitTheme
 
 
 @Composable
-fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
+fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .width(200.dp)
-            .height(200.dp),
+            .height(200.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(Color.Transparent)
     ) {
@@ -59,5 +61,20 @@ fun HomeCategory(modifier: Modifier = Modifier, listCourse: ListCourse) {
             }
         }
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeCategoryPreview() {
+    LearnitTheme {
+        HomeCategory(
+            listCourse = ListCourse(
+                id = 1,
+                descCourse = "Graphic Design",
+                descCourse2 = "Design Advanced",
+                progressCourse = "Beginner",
+                category = "Design"
+        ), onClick = {})
     }
 }

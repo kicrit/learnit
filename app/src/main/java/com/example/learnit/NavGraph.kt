@@ -11,13 +11,13 @@ import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.category.CategoryDetailScreen
-import com.example.learnit.course.coursedetail.WebProgramming
+import com.example.learnit.course.coursedetail.CourseDetailScreen
 import com.example.learnit.course.course.CoursePage
+import com.example.learnit.course.mycourse.MyCourseScreen
 import com.example.learnit.course.videoplayer.VideoPlayerScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
 import com.example.learnit.login.RegisterSection
-import com.example.learnit.mycourse.MyCourseScreen
 import com.example.learnit.profile.EditProfileScreen
 import com.example.learnit.profile.ProfileScreen
 import com.example.learnit.splash.SplashScreen
@@ -32,7 +32,6 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
     NavHost(navController = navController, startDestination = "splash", builder = {
 
         composable("splash") {
-            // Pastikan authViewModel sudah diteruskan seperti ini
             SplashScreen(navController = navController, authViewModel = authViewModel)
         }
 
@@ -57,8 +56,12 @@ fun NavGraph(modifier: Modifier = Modifier, authViewModel: AuthViewModel,userVie
         composable("editprofile") {
             EditProfileScreen(modifier,navController, authViewModel)
         }
-        composable("webprogramming") {
-            WebProgramming(modifier,navController)
+        composable(
+            route = "course/{courseId}",
+            arguments = listOf(navArgument("courseId") { type = NavType.IntType })
+        ) {
+            val courseId = it.arguments?.getInt("courseId") ?: 0
+            CourseDetailScreen(navController = navController, courseId = courseId)
         }
         composable("mycourse") {
             MyCourseScreen(modifier,navController, navBack = { navController.popBackStack() })

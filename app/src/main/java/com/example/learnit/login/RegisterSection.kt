@@ -2,13 +2,38 @@ package com.example.learnit.login
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,11 +41,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.auth.AuthState
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.ui.theme.LearnitTheme
@@ -32,17 +61,23 @@ fun RegisterSection(
     authViewModel: AuthViewModel
 ) {
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(authState.value) {
-        when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate("login")
-            is AuthState.Error -> Toast.makeText(
-                context, (authState.value as AuthState.Error).message,
-                Toast.LENGTH_SHORT
-            ).show()
-            else -> Unit
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.RegistrationSuccess -> {
+                Toast.makeText(context, "Registration successful! Please log in.", Toast.LENGTH_SHORT).show()
+                navController.navigate("login") {
+                    popUpTo("register") { inclusive = true }
+                }
+                authViewModel.resetAuthState() // Reset state after navigation
+            }
+            is AuthState.Error -> {
+                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+                authViewModel.resetAuthState()
+            }
+            else -> Unit // Do nothing on other states like Loading
         }
     }
 
@@ -50,6 +85,7 @@ fun RegisterSection(
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -227,6 +263,19 @@ fun RegisterSection(
                     unfocusedBorderColor = Color(0xFF131BFF),
                     cursorColor = Color(0xFF131BFF)
                 ),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = {passwordVisible = !passwordVisible}){
+                        Icon(imageVector  = image, description)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -258,7 +307,7 @@ fun RegisterSection(
                 onClick = {
                     authViewModel.signup(email,password,username)
                 },
-                enabled = authState.value != AuthState.Loading,
+                enabled = authState != AuthState.Loading,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Color.White
@@ -275,3 +324,13 @@ fun RegisterSection(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun RegisterSectionPreview() {
+    LearnitTheme {
+        RegisterSection(
+            navController = rememberNavController(),
+            authViewModel = AuthViewModel()
+        )
+    }
+}

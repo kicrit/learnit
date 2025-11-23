@@ -6,14 +6,17 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.gambar.ChatIcon
 import com.example.learnit.gambar.CourseIcon
 import com.example.learnit.gambar.HomeIcon
 import com.example.learnit.gambar.ProfileIcon
 import com.example.learnit.gambar.TaskIcon
 import com.example.learnit.model.BottomBarItem
+import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
 fun BottomBar(
@@ -58,5 +61,13 @@ fun BottomBar(
                 icon = { Icon(imageVector = it.icon, contentDescription = it.title) }
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BottomBarPreview() {
+    LearnitTheme {
+        BottomBar(modifier = Modifier, navController = rememberNavController())
     }
 }

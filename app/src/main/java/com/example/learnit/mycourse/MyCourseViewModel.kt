@@ -20,7 +20,6 @@ class MyCourseViewModel : ViewModel() {
 
     init {
         loadMyCourses()
-        loadVideoCompletionState(1) // Assuming courseId 1 for Web Programming
     }
 
     fun loadMyCourses() {
@@ -100,7 +99,7 @@ class MyCourseViewModel : ViewModel() {
         }
     }
 
-    private fun loadVideoCompletionState(courseId: Int) {
+    fun loadVideoCompletionState(courseId: Int) {
         val uid = auth.currentUser?.uid ?: return
         db.collection("users").document(uid).collection("enrolledCourses").document(courseId.toString())
             .get().addOnSuccessListener { snapshot ->

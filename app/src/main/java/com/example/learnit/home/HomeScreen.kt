@@ -77,8 +77,10 @@ fun HomeScreen(
                 )
             }
             LazyRow {
-                items(courseList) {
-                    HomeCategory(listCourse = it)
+                items(courseList) { course ->
+                    HomeCategory(listCourse = course) {
+                        navController.navigate("course/${course.id}")
+                    }
                 }
             }
 

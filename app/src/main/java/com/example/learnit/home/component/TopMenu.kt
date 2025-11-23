@@ -60,7 +60,7 @@ fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(onClick = { navController.navigate("course") }) {
+                TextButton(onClick = { navController.navigate("categories") }) {
                     Text(
                         text = "SEE ALL >",
                         color = Color(0xFF131BFF),

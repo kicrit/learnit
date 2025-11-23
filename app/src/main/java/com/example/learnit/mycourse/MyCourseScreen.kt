@@ -1,4 +1,4 @@
-package com.example.learnit.mycourse
+package com.example.learnit.course.mycourse
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,14 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.learnit.R
 import com.example.learnit.component.BottomBar
 import com.example.learnit.course.course.component.CourseCategory
 import com.example.learnit.course.course.model.ListCourse
-import com.example.learnit.course.mycourse.MyCourseViewModel
+import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
 fun MyCourseScreen(
@@ -91,13 +93,7 @@ fun CourseList(navController: NavController, list: List<ListCourse>) {
         items(list) { course ->
             CourseCategory(
                 listCourse = course,
-                onClick = {
-                    // Navigate to the correct course detail screen
-                    when (course.id) {
-                        1 -> navController.navigate("webprogramming")
-                        // Add other cases for other courses here
-                    }
-                }
+                onClick = { navController.navigate("course/${course.id}") }
             )
         }
     }
@@ -123,7 +119,7 @@ fun EmptyMyCourse() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "You haven't enrolled any courses yet",
+            text = "You haven\'t enrolled any courses yet",
             fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -131,5 +127,13 @@ fun EmptyMyCourse() {
             text = "Explore courses and start learning!",
             color = Color.Gray
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MyCourseScreenPreview() {
+    LearnitTheme {
+        MyCourseScreen(modifier = Modifier, navController = rememberNavController(), navBack = {})
     }
 }

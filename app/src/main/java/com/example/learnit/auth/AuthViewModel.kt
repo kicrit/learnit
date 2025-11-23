@@ -67,6 +67,10 @@ class AuthViewModel : ViewModel() {
         _updateState.value = UpdateState.Idle
     }
 
+    fun resetAuthState() {
+        _authState.value = AuthState.Unauthenticated
+    }
+
     fun checkAuthStatus() {
         if (auth.currentUser == null) {
             _authState.value = AuthState.Unauthenticated
@@ -120,7 +124,8 @@ class AuthViewModel : ViewModel() {
                         .document(userId)
                         .set(userData)
                         .addOnSuccessListener {
-                            _authState.value = AuthState.Authenticated
+                            auth.signOut() // Sign out the user immediately after saving data
+                            _authState.value = AuthState.RegistrationSuccess
                         }
                         .addOnFailureListener {
                             _authState.value =
@@ -143,6 +148,7 @@ class AuthViewModel : ViewModel() {
 
 sealed class AuthState {
     object Authenticated : AuthState()
+    object RegistrationSuccess : AuthState() // New state
     object Unauthenticated : AuthState()
     object Loading : AuthState()
     data class Error(val message: String) : AuthState()

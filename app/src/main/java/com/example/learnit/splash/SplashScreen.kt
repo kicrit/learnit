@@ -10,10 +10,14 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState // <-- IMPORT BARU
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,10 +26,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.learnit.auth.AuthState // <-- IMPORT BARU
 import com.example.learnit.auth.AuthViewModel // <-- IMPORT BARU
 import com.example.learnit.ui.theme.Poppins
@@ -67,8 +69,8 @@ fun SplashScreen(navController: NavController, authViewModel: AuthViewModel) {
                     popUpTo("splash") { inclusive = true }
                 }
             }
-            is AuthState.Unauthenticated, is AuthState.Error -> {
-                // Jika belum login atau ada error, pergi ke halaman login
+            is AuthState.Unauthenticated, is AuthState.Error, is AuthState.RegistrationSuccess -> {
+                // Jika belum login, ada error, atau baru saja sukses registrasi, pergi ke halaman login
                 navController.navigate("login") {
                     popUpTo("splash") { inclusive = true }
                 }
@@ -109,5 +111,3 @@ fun SplashScreen(navController: NavController, authViewModel: AuthViewModel) {
         )
     }
 }
-
-// Preview tidak perlu diubah, tapi akan selalu mengarah ke 'login' karena tidak ada AuthViewModel nyata
