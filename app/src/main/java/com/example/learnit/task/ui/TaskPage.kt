@@ -1,27 +1,20 @@
 package com.example.learnit.task.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.learnit.component.BottomBar
 import com.example.learnit.task.TaskViewModel
 import com.example.learnit.task.component.TaskList
 import com.example.learnit.task.component.TopTaskBar
@@ -49,47 +42,65 @@ fun TaskPage(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        TopTaskBar(
-            title = "Task List",
-            onBackClick = { navController.popBackStack() },
-            onAddClick = { navController.navigate("addtask") } // Ensure this matches NavGraph
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
+    Scaffold(
+        containerColor = Color(0xFFF8F9FD),
+        bottomBar = {
+            BottomBar(
+                modifier = Modifier,
+                navController = navController
+            )
+        }
+    ) { paddingValues ->
+
+        Column(
+            modifier = modifier
                 .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF8F9FD))
         ) {
-            if (tasks.isEmpty()) {
-                Text(
-                    text = "No tasks yet.",
-                    color = Color.Gray,
-                    modifier = Modifier.padding(16.dp).align(Alignment.Center)
-                )
-            } else {
-                TaskList(
-                    tasks = tasks,
-                    onEdit = { task ->
-                        navController.navigate("addtask?taskId=${task.id}")
-                    },
-                    onDelete = { task ->
-                        viewModel.deleteTask(task.id) { success, err ->
-                            if (!success && err != null) {
-                                coroutineScope.launch { snackbarHostState.showSnackbar(err) }
+
+            TopTaskBar(
+                title = "My Tasks",
+                onBackClick = { navController.popBackStack() },
+                onAddClick = { navController.navigate("addtask") }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                if (tasks.isEmpty()) {
+                    Text(
+                        text = "✨ No tasks yet, let's add one!",
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                } else {
+                    TaskList(
+                        tasks = tasks,
+                        onEdit = { task ->
+                            navController.navigate("addtask?taskId=${task.id}")
+                        },
+                        onDelete = { task ->
+                            viewModel.deleteTask(task.id) { success, err ->
+                                if (!success && err != null) {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(err)
+                                    }
+                                }
                             }
                         }
-                    }
+                    )
+                }
+
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }
-
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
         }
     }
 }
