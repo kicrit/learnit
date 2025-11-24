@@ -11,7 +11,6 @@ import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.category.CategoryDetailScreen
-import com.example.learnit.course.course.CoursePage
 import com.example.learnit.course.coursedetail.CourseDetailScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
@@ -45,12 +44,8 @@ fun NavGraph(
         composable("profile") {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
-        composable("categories") {
-            AllCategoriesPage(navController = navController)
-        }
-
         composable("course") {
-            CoursePage(navController = navController)
+            AllCategoriesPage(navController = navController)
         }
         composable("task") {
             TaskPage(navController = navController, viewModel = taskViewModel)
