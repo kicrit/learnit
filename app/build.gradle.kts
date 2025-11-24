@@ -17,6 +17,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "GEMINI_API_KEY",
+            "\"${project.properties["GEMINI_API_KEY"]}\""
+        )
+
     }
 
     buildTypes {
@@ -37,6 +44,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -57,6 +65,8 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.compose.runtime.livedata)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
     implementation("androidx.compose.material:material")
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation(libs.androidx.foundation)

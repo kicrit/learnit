@@ -1,19 +1,8 @@
 package com.example.learnit.home.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,96 +19,103 @@ import com.example.learnit.gambar.Pelukis
 import com.example.learnit.ui.theme.LearnitTheme
 
 @Composable
-fun TopMenu(modifier: Modifier = Modifier, navController : NavController) {
+fun TopMenu(modifier: Modifier = Modifier, navController: NavController) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation( // ini nambah bayangan
-            defaultElevation = 10.dp
-        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = Modifier.padding(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
-            // header categori sama see all
+            // Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Categories",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(onClick = { navController.navigate("course") }) {
+                TextButton(onClick = { navController.navigate("categories") }) {
                     Text(
                         text = "SEE ALL >",
                         color = Color(0xFF131BFF),
                         fontWeight = FontWeight.SemiBold
                     )
-
                 }
             }
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
 
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Categories Row
             Row(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("category/3D Design") }
-                ) {
-                    Icon(
-                        imageVector = Kotak,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "3D Design",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("category/Traditional Art") }
-                ) {
-                    Icon(
-                        imageVector = OrangLagu,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "Art & Humanities",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { navController.navigate("category/Graphic Design") }
-                ) {
-                    Icon(
-                        imageVector = Pelukis,
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                    )
-                    Text(
-                        text = "Graphic Design",
-                        modifier = Modifier.widthIn(max = 100.dp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                CategoryItem(
+                    icon = Kotak,
+                    label = "3D Design",
+                    bgColor = Color(0xFFD7E8FF),
+                    onClick = { navController.navigate("category/3D Design") }
+                )
+                CategoryItem(
+                    icon = OrangLagu,
+                    label = "Art & Humanities",
+                    bgColor = Color(0xFFE8D7FF),
+                    onClick = { navController.navigate("category/Art & Humanities") }
+                )
+                CategoryItem(
+                    icon = Pelukis,
+                    label = "Graphic Design",
+                    bgColor = Color(0xFFD7FFE0),
+                    onClick = { navController.navigate("category/Graphic Design") }
+                )
             }
         }
+    }
+}
+
+@Composable
+fun CategoryItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    bgColor: Color,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = bgColor),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
+
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .widthIn(max = 90.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 

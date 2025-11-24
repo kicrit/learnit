@@ -46,12 +46,14 @@ fun HomeTopBar(username: String) {
         {
             Column {
                 Text(
-                    text = "Hi, $username",
-                    fontSize = 24.sp,
+                    text = "Hi, $username \uD83D\uDC4B",
+                    fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Mau belajar apa hari ini?", fontSize = 13.sp,
+                    text = "Mau belajar apa hari ini?",
+                    fontSize = 13.sp,
+                    color = Color(0xFF757575)
                 )
             }
             Icon(
