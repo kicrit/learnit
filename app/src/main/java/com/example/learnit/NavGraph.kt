@@ -10,7 +10,7 @@ import androidx.navigation.navArgument
 import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
-import com.example.learnit.course.course.FilteredCoursePage
+import com.example.learnit.category.CategoryDetailScreen
 import com.example.learnit.course.coursedetail.CourseDetailScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
@@ -78,7 +78,7 @@ fun NavGraph(
             arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
         ) { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            FilteredCoursePage(navController = navController, categoryName = categoryName)
+            CategoryDetailScreen(navController = navController, category = categoryName)
         }
         composable("mycourse") {
             MyCourseScreen(navController = navController, navBack = { navController.popBackStack() })
