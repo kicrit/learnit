@@ -11,6 +11,7 @@ import com.example.learnit.allcategories.model.AllCategoriesPage
 import com.example.learnit.auth.AuthViewModel
 import com.example.learnit.auth.UserViewModel
 import com.example.learnit.category.CategoryDetailScreen
+import com.example.learnit.course.course.CoursePage
 import com.example.learnit.course.coursedetail.CourseDetailScreen
 import com.example.learnit.home.HomeScreen
 import com.example.learnit.login.ProfileSection
@@ -45,7 +46,7 @@ fun NavGraph(
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
         composable("course") {
-            AllCategoriesPage(navController = navController)
+            CoursePage(navController = navController)
         }
         composable("task") {
             TaskPage(navController = navController, viewModel = taskViewModel)
@@ -79,6 +80,9 @@ fun NavGraph(
         ) { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             CategoryDetailScreen(navController = navController, category = categoryName)
+        }
+        composable("categories") {
+            AllCategoriesPage(navController = navController)
         }
         composable("mycourse") {
             MyCourseScreen(navController = navController, navBack = { navController.popBackStack() })
