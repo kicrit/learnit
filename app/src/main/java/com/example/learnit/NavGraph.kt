@@ -19,6 +19,7 @@ import com.example.learnit.login.RegisterSection
 import com.example.learnit.mycourse.MyCourseScreen
 import com.example.learnit.profile.EditProfileScreen
 import com.example.learnit.profile.ProfileScreen
+import com.example.learnit.splash.SplashScreen
 import com.example.learnit.task.TaskViewModel
 import com.example.learnit.task.ui.AddEditTaskScreen
 import com.example.learnit.task.ui.TaskPage
@@ -32,7 +33,10 @@ fun NavGraph(
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login", modifier = modifier) {
+    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
+        composable("splash") {
+            SplashScreen(navController = navController, authViewModel = authViewModel)
+        }
         composable("login") {
             ProfileSection(navController = navController, authViewModel = authViewModel)
         }
@@ -45,14 +49,9 @@ fun NavGraph(
         composable("profile") {
             ProfileScreen(navController = navController, authViewModel = authViewModel)
         }
-        composable("categories") {
-            AllCategoriesPage(navController = navController)
-        }
-
         composable("course") {
             CoursePage(navController = navController)
         }
-
         composable("task") {
             TaskPage(navController = navController, viewModel = taskViewModel)
         }
@@ -85,6 +84,9 @@ fun NavGraph(
         ) { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             CategoryDetailScreen(navController = navController, category = categoryName)
+        }
+        composable("categories") {
+            AllCategoriesPage(navController = navController)
         }
         composable("mycourse") {
             MyCourseScreen(navController = navController, navBack = { navController.popBackStack() })
