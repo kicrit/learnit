@@ -1,23 +1,26 @@
 package com.example.learnit.task
 
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.learnit.task.model.TaskItem
+import com.example.learnit.task.model.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import java.util.Date
 
-class TaskViewModel(
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+class TaskViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-) : ViewModel() {
 
-    private val _tasks = MutableLiveData<List<TaskItem>>(emptyList())
-    val tasks: LiveData<List<TaskItem>> = _tasks
+    private val _tasks = MutableLiveData<List<Task>>(emptyList())
+    val tasks: LiveData<List<Task>> = _tasks
 
-    private val _selectedTask = MutableLiveData<TaskItem?>()
-    val selectedTask: LiveData<TaskItem?> = _selectedTask
+    private val _selectedTask = MutableLiveData<Task?>()
+    val selectedTask: LiveData<Task?> = _selectedTask
 
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
@@ -26,28 +29,36 @@ class TaskViewModel(
     val error: LiveData<String?> = _error
 
     private var listenerRegistration: ListenerRegistration? = null
+    private val scheduler = TaskAlarmScheduler(application)
 
     init {
         startListeningForTasks()
     }
 
-    private fun getTasksCollection() = db.collection("users").document(auth.currentUser!!.uid).collection("tasks")
+    private fun getTasksCollection() = auth.currentUser?.uid?.let {
+        db.collection("users").document(it).collection("tasks")
+    }
 
-    private fun startListeningForTasks() {
-        val user = auth.currentUser
-        if (user == null) {
+    fun startListeningForTasks() {
+        val collection = getTasksCollection() ?: run {
             _error.value = "User not logged in"
             return
         }
 
-        listenerRegistration = getTasksCollection().addSnapshotListener { snapshot, e ->
+        listenerRegistration = collection.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 _error.value = e.localizedMessage
                 return@addSnapshotListener
             }
             if (snapshot != null) {
                 val taskList = snapshot.documents.mapNotNull { doc ->
-                    doc.toObject(TaskItem::class.java)?.copy(id = doc.id)
+                    try {
+                        // Defensive deserialization
+                        doc.toObject(Task::class.java)?.copy(id = doc.id)
+                    } catch (e: Exception) {
+                        Log.e("TaskViewModel", "Error parsing task document ${doc.id}", e)
+                        null // Ignore malformed data
+                    }
                 }
                 _tasks.value = taskList
             }
@@ -60,44 +71,48 @@ class TaskViewModel(
             return
         }
         _loading.value = true
-        getTasksCollection().document(taskId).get()
-            .addOnSuccessListener { document ->
-                val task = document.toObject(TaskItem::class.java)?.copy(id = document.id)
+        getTasksCollection()?.document(taskId)?.get()
+            ?.addOnSuccessListener { document ->
+                val task = document.toObject(Task::class.java)?.copy(id = document.id)
                 _selectedTask.value = task
                 _loading.value = false
             }
-            .addOnFailureListener { e ->
+            ?.addOnFailureListener { e ->
                 _error.value = e.localizedMessage
                 _loading.value = false
             }
     }
 
-    fun addTask(title: String, notes: String, deadline: String, onResult: (Boolean, String?) -> Unit) {
+    fun addTask(task: Task, onResult: (Boolean, String?) -> Unit) {
         _loading.value = true
-        val task = TaskItem(title = title, notes = notes, deadline = deadline)
-        getTasksCollection().add(task)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
-            .addOnCompleteListener { _loading.value = false }
+        getTasksCollection()?.add(task)
+            ?.addOnSuccessListener { documentReference ->
+                val savedTask = task.copy(id = documentReference.id)
+                scheduler.schedule(savedTask)
+                onResult(true, null)
+            }
+            ?.addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+            ?.addOnCompleteListener { _loading.value = false }
     }
 
-    fun updateTask(id: String, title: String, notes: String, deadline: String, onResult: (Boolean, String?) -> Unit) {
+    fun updateTask(task: Task, onResult: (Boolean, String?) -> Unit) {
         _loading.value = true
-        val taskUpdates = mapOf(
-            "title" to title,
-            "notes" to notes,
-            "deadline" to deadline
-        )
-        getTasksCollection().document(id).update(taskUpdates)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
-            .addOnCompleteListener { _loading.value = false }
+        getTasksCollection()?.document(task.id)?.set(task)
+            ?.addOnSuccessListener {
+                scheduler.schedule(task) // Re-schedule with updated time
+                onResult(true, null)
+            }
+            ?.addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+            ?.addOnCompleteListener { _loading.value = false }
     }
 
-    fun deleteTask(taskId: String, onResult: (Boolean, String?) -> Unit) {
-        getTasksCollection().document(taskId).delete()
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+    fun deleteTask(task: Task, onResult: (Boolean, String?) -> Unit) {
+        getTasksCollection()?.document(task.id)?.delete()
+            ?.addOnSuccessListener {
+                scheduler.cancel(task)
+                onResult(true, null)
+            }
+            ?.addOnFailureListener { e -> onResult(false, e.localizedMessage) }
     }
 
     fun clearSelectedTask() {

@@ -1,33 +1,68 @@
 package com.example.learnit.task.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.learnit.task.TaskViewModel
+import com.example.learnit.task.model.Task
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,43 +76,28 @@ fun AddEditTaskScreen(
     val screenTitle = if (isEditing) "Edit Task" else "Add Task"
 
     val task by taskViewModel.selectedTask.observeAsState()
+    val isLoading by taskViewModel.loading.observeAsState(false)
+    val context = LocalContext.current
 
     var title by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
-    var deadlineDate by remember { mutableStateOf<Date?>(null) }
-    var deadlineTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var dueDate by remember { mutableStateOf<Date?>(null) }
+    var dueTime by remember { mutableStateOf("") }
 
-    // Effect to fetch task data when editing, or reset when adding
     LaunchedEffect(taskId) {
         if (isEditing) {
             taskViewModel.getTaskById(taskId!!)
         } else {
-            // **THE FIX**: Forcibly reset all states for a new task
             taskViewModel.clearSelectedTask()
-            title = ""
-            notes = ""
-            deadlineDate = null
-            deadlineTime = null
         }
     }
 
-    // Effect to populate the form once the task data is loaded for editing
     LaunchedEffect(task) {
         if (isEditing && task != null) {
             title = task!!.title
             notes = task!!.notes
-            try {
-                val fullDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
-                val parsedDate = fullDateFormat.parse(task!!.deadline)
-                parsedDate?.let { date ->
-                    deadlineDate = date
-                    val cal = Calendar.getInstance().apply { time = date }
-                    deadlineTime = Pair(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
-                }
-            } catch (e: Exception) {
-                deadlineDate = null
-                deadlineTime = null
-            }
+            dueDate = task!!.dueDate
+            dueTime = task!!.dueTime
         }
     }
 
@@ -86,12 +106,11 @@ fun AddEditTaskScreen(
 
     val datePickerState = rememberDatePickerState()
     val timePickerState = rememberTimePickerState()
-    val isLoading by taskViewModel.loading.observeAsState(false)
 
-    val dateFormatter = remember { SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")) }
+    val dateFormatter = remember { SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()) }
 
-    val selectedDateText = deadlineDate?.let { dateFormatter.format(it) }
-    val selectedTimeText = deadlineTime?.let { String.format(Locale.getDefault(), "%02d:%02d", it.first, it.second) }
+    val selectedDateText = dueDate?.let { dateFormatter.format(it) }
+    val selectedTimeText = if (dueTime.isNotBlank()) dueTime else null
 
     Box(
         modifier = modifier
@@ -102,6 +121,7 @@ fun AddEditTaskScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             // Top Bar
             Row(
@@ -110,14 +130,13 @@ fun AddEditTaskScreen(
                     .padding(top = 40.dp, bottom = 24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable { navController.popBackStack() },
-                    tint = Color.Black
-                )
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.Black
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
@@ -129,8 +148,8 @@ fun AddEditTaskScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
+            // Title, Notes, Date, Time fields...
+            
             // Title Field
             Text(
                 text = "TITLE",
@@ -263,29 +282,23 @@ fun AddEditTaskScreen(
             // Save Button
             Button(
                 onClick = {
-                    if (title.isNotBlank() && deadlineDate != null && deadlineTime != null) {
-                        val dateStr = dateFormatter.format(deadlineDate!!)
-                        val timeStr = String.format(Locale.getDefault(), "%02d:%02d", deadlineTime!!.first, deadlineTime!!.second)
-                        val deadline = "$dateStr, $timeStr"
-
+                    if (title.isNotBlank() && dueDate != null && dueTime.isNotBlank()) {
+                        val taskToSave = Task(
+                            id = taskId ?: "",
+                            title = title.trim(),
+                            notes = notes.trim(),
+                            dueDate = dueDate!!,
+                            dueTime = dueTime
+                        )
                         if (isEditing) {
-                            taskViewModel.updateTask(
-                                id = taskId!!,
-                                title = title.trim(),
-                                notes = notes.trim(),
-                                deadline = deadline
-                            ) { success, errorMsg ->
+                            taskViewModel.updateTask(taskToSave) { success, errorMsg ->
                                 if (success) navController.popBackStack()
-                                else println("Error updating task: $errorMsg")
+                                else Toast.makeText(context, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            taskViewModel.addTask(
-                                title = title.trim(),
-                                notes = notes.trim(),
-                                deadline = deadline
-                            ) { success, errorMsg ->
+                            taskViewModel.addTask(taskToSave) { success, errorMsg ->
                                 if (success) navController.popBackStack()
-                                else println("Error saving task: $errorMsg")
+                                else Toast.makeText(context, "Error: $errorMsg", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -296,7 +309,7 @@ fun AddEditTaskScreen(
                     .height(55.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-                enabled = title.isNotBlank() && deadlineDate != null && deadlineTime != null && !isLoading
+                enabled = title.isNotBlank() && dueDate != null && dueTime.isNotBlank() && !isLoading
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
@@ -321,17 +334,13 @@ fun AddEditTaskScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         datePickerState.selectedDateMillis?.let {
-                            deadlineDate = Date(it)
+                            dueDate = Date(it)
                         }
                         showDatePicker = false
-                    }) {
-                        Text("OK")
-                    }
+                    }) { Text("OK") }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDatePicker = false }) {
-                        Text("Cancel")
-                    }
+                    TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
                 }
             ) {
                 DatePicker(state = datePickerState)
@@ -345,17 +354,13 @@ fun AddEditTaskScreen(
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            deadlineTime = Pair(timePickerState.hour, timePickerState.minute)
+                            dueTime = String.format("%02d:%02d", timePickerState.hour, timePickerState.minute)
                             showTimePicker = false
                         }
-                    ) {
-                        Text("OK")
-                    }
+                    ) { Text("OK") }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showTimePicker = false }) {
-                        Text("Cancel")
-                    }
+                    TextButton(onClick = { showTimePicker = false }) { Text("Cancel") }
                 }
             ) {
                 TimePicker(state = timePickerState)
@@ -415,16 +420,4 @@ fun TimePickerDialog(
             }
         }
     }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun AddTaskScreenPreview() {
-    AddEditTaskScreen(
-        modifier = Modifier,
-        navController = rememberNavController(),
-        taskViewModel = viewModel(),
-        taskId = null
-    )
 }

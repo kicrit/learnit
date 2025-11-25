@@ -76,6 +76,8 @@ dependencies {
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation(libs.firebase.storage)
+    implementation("com.google.accompanist:accompanist-permissions:0.31.5-beta")
+    implementation(libs.androidx.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
